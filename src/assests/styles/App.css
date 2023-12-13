@@ -29,7 +29,7 @@ a:active {
   font-size: 17px;
 }
 
-.navTab {
+.home_navTab {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, max-content);
@@ -43,11 +43,11 @@ a:active {
   font-weight: normal;
 }
 
-.navTab .nav-item {
+.home_navTab .nav-item {
   padding-bottom: 10px;
 }
 
-.navTab .nav-item a {
+.home_navTab .nav-item a {
   color: black;
   display: flex;
   justify-content: center;
@@ -56,15 +56,61 @@ a:active {
   font-size: 14px;
 }
 
-.navTab > .nav-item:nth-child(2) {
+.home_navTab > .nav-item:nth-child(2) {
   width: 100px;
 }
 
-.navTab > .nav-item:last-child a {
+.home_navTab > .nav-item:nth-child(3) a {
+  align-items: center;
+  height: 100%;
+}
+
+.home_navTab > .nav-item:last-child a {
   gap: 30px;
 }
 
-.navTab .nav-item-active {
+.home_navTab .nav-item-active {
   border-bottom: solid 2px darkblue;
   color: darkblue;
+}
+
+.bookingsForm {
+  background-color: darkblue;
+}
+
+.flight_navTab .nav-item {
+  color: white;
+  padding: 5px 0;
+  font-weight: 600;
+}
+
+.flight_navTab .nav-item.nav-item-active {
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: 14px;
+  color: darkblue;
+  background-color: white;
+  border-radius: 2px;
+}
+
+.btn.btn-lg {
+  background-color: orange;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+  font-weight: 800;
+  border-radius: 5px;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.appInputs {
+  width: 100%;
+}
+
+.appInputs > input {
+  height: 70px;
+  width: 100%;
+  padding: 10px;
 }

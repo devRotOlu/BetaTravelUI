@@ -12,26 +12,27 @@ import ManageBookings from "./home/ManageBookings";
 import OneWayBooking from "./home/flightBooking/OneWayBooking";
 import MultiCityBooking from "./home/flightBooking/MultiCityBooking";
 import RoundTripBooking from "./home/flightBooking/RoundTripBooking";
+import ContextWrapper from "../context/ContextWrapper";
 
 import "../assests/styles/App.css";
 
 function App() {
   return (
-    <div>
+    <ContextWrapper>
       <OffCanvasNavbar />
       <Routes>
         <Route path="/" element={<Home />}>
-          <Route element={<FlightBooking />}>
-            <Route path="flight-round-trip" element={<RoundTripBooking />} />
-            <Route path="flight-multi-city" element={<MultiCityBooking />} />
-            <Route path="flight-one-way" element={<OneWayBooking />} />
+          <Route path="flight" element={<FlightBooking />}>
+            <Route path="round-trip" element={<RoundTripBooking />} />
+            <Route path="multi-city" element={<MultiCityBooking />} />
+            <Route path="one-way" element={<OneWayBooking />} />
           </Route>
           <Route path="cars" element={<CarBooking />} />
           <Route path="hotels" element={<HotelBooking />} />
           <Route path="bookings" element={<ManageBookings />} />
         </Route>
       </Routes>
-    </div>
+    </ContextWrapper>
   );
 }
 

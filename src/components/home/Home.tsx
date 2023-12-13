@@ -1,15 +1,18 @@
-import { Outlet } from "react-router-dom";
+import { useEffect } from "react";
 import { Icon } from "@iconify/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, Outlet } from "react-router-dom";
 
 import Tab from "./Tab";
 import List from "./List";
+import Button from "../Button";
 
 import { useRouteEventListener } from "../../utils/useCustomHooks/useRouteEventListener";
 import { homeTabLinks } from "../../utils/data";
 
 const Home = () => {
-  const routeRef = useRouteEventListener(homeTabLinks);
+  const routeRef = useRouteEventListener(homeTabLinks, 2);
+  const navigate = useNavigate();
+  useEffect(() => navigate("flight"), []);
   const links = homeTabLinks.map(({ link, icon, linkName }, index) => {
     if (index === homeTabLinks.length - 1) {
       const nameSplit = linkName.split(" ");
@@ -38,11 +41,16 @@ const Home = () => {
   return (
     <div>
       <main>
-        <Tab className="navTab py-4 px-2 column-gap-3 row-gap-4" ref={routeRef}>
+        <Tab className="home_navTab py-4 px-2 column-gap-3 row-gap-4 m-0" ref={routeRef}>
           {links}
         </Tab>
-        <form className="bookingsForm container-fluid">
+        <form className="bookingsForm container-fluid d-flex flex-column justify-content-center pb-4">
           <Outlet />
+          <Button buttonLabel="Search Flights" buttonType="submit">
+            <span>
+              <Icon icon="ion:chevron-forward-outline" />
+            </span>
+          </Button>
         </form>
       </main>
     </div>
