@@ -44,13 +44,8 @@ const Home = () => {
         <Tab className="home_navTab py-4 px-2 column-gap-3 row-gap-4 m-0" ref={routeRef}>
           {links}
         </Tab>
-        <form className="bookingsForm container-fluid d-flex flex-column justify-content-center pb-4">
+        <form className="bookingsForm container-fluid d-flex flex-column justify-content-center pb-4 py-4">
           <Outlet />
-          <Button buttonLabel="Search Flights" buttonType="submit">
-            <span>
-              <Icon icon="ion:chevron-forward-outline" />
-            </span>
-          </Button>
         </form>
       </main>
     </div>

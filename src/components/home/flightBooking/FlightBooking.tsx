@@ -30,7 +30,7 @@ const FlightBooking = () => {
   });
   return (
     <>
-      <Tab ref={routeRef} className="flight_navTab d-flex justify-content-between px-1 mb-4 py-4">
+      <Tab ref={routeRef} className="flight_navTab d-flex justify-content-between px-1 mb-4">
         {links}
       </Tab>
       <Outlet />

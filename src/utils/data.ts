@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 export const flightTabLinks = [
   {
@@ -53,9 +53,19 @@ export type FormInputProps = {
   inputName: string;
   children?: React.ReactNode;
   inputLabel?: string;
+  placeHolder?: string;
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export type FormDatalistProps = {};
+export type FormDatalistProps = {
+  children: ReactNode;
+  list: string;
+  name: string;
+  id: string;
+  value: string;
+  placeHolder?: string;
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   buttonClass?: string;
@@ -63,3 +73,10 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   children?: React.ReactNode;
   buttonType: "button" | "submit" | "reset";
 }
+
+export type DataListWrapperProps = {
+  children: ReactNode;
+  icon: string;
+  label: string;
+  styleClass?: string;
+};

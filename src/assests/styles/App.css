@@ -96,13 +96,14 @@ a:active {
 .btn.btn-lg {
   background-color: orange;
   display: flex;
+  font-size: 17px;
   align-items: center;
   justify-content: center;
-  height: 70px;
+  height: 65px;
   font-weight: 800;
   border-radius: 5px;
   gap: 20px;
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
 .appInputs {
@@ -110,7 +111,35 @@ a:active {
 }
 
 .appInputs > input {
-  height: 70px;
+  height: 65px;
   width: 100%;
-  padding: 10px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  outline: darkblue;
+  border-color: darkblue;
+}
+
+.appInputs.bookingInput > input {
+  font-weight: 800;
+}
+
+.dataListWrap {
+  background-color: white;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.dataListWrap.hotelCheckIn {
+  border-top-right-radius: unset;
+  border-bottom-right-radius: unset;
+}
+
+.dataListWrap.hotelCheckOut {
+  border-top-left-radius: unset;
+  border-bottom-left-radius: unset;
+}
+
+.dataListInput {
+  border: white;
+  outline: white;
 }
