@@ -7,7 +7,7 @@ import Home from "./home/Home";
 import OffCanvasNavbar from "./OffCanvasNavbar";
 import CarBooking from "./home/CarBooking";
 import FlightBooking from "./home/flightBooking/FlightBooking";
-import HotelBooking from "./home/HotelBooking";
+import HotelBooking from "./home/hotelBooking/HotelBooking";
 import ManageBookings from "./home/ManageBookings";
 import OneWayBooking from "./home/flightBooking/OneWayBooking";
 import MultiCityBooking from "./home/flightBooking/MultiCityBooking";

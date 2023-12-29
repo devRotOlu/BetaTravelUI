@@ -93,8 +93,9 @@ a:active {
   border-radius: 2px;
 }
 
-.btn.btn-lg {
+.appBtn {
   background-color: orange;
+  border: orange;
   display: flex;
   font-size: 17px;
   align-items: center;
@@ -104,6 +105,51 @@ a:active {
   border-radius: 5px;
   gap: 20px;
   margin-top: 30px;
+  color: white;
+}
+
+.paxBtnWrapper {
+  width: 40%;
+}
+
+.appBtn.paxBtn {
+  height: fit-content;
+  border-radius: 50%;
+  background-color: darkblue;
+  margin-top: 0;
+  font-size: 15px;
+}
+
+.appBtn.bookRoomBtn {
+  height: 35px;
+  padding: 0 18px;
+}
+
+.appBtn.bookRoomBtn.cancelRoomBtn {
+  color: darkblue;
+  padding: 0;
+  background-color: white;
+}
+
+.appBtn.paxBtn.paxBtn_1 {
+  background-color: rgb(204, 201, 201);
+}
+
+.appBtn.roomBtn {
+  font-size: 15px;
+  width: fit-content;
+  height: 40px;
+  margin-top: 0;
+  padding: 0 15px;
+  background-color: white;
+  color: red;
+  border-radius: 0;
+  border: solid thin red;
+}
+
+.appBtn.appBtn.addRoomBtn {
+  border: solid thin darkblue;
+  color: darkblue;
 }
 
 .appInputs {
@@ -142,4 +188,57 @@ a:active {
 .dataListInput {
   border: white;
   outline: white;
+}
+
+datalist {
+  display: none;
+  padding: 0;
+  padding-top: 5px;
+  background-color: orange;
+  z-index: 100000;
+  position: absolute;
+  top: 65px;
+  left: 0;
+  width: 100%;
+  height: fit-content;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+._dataListDisplay {
+  display: block;
+}
+
+option {
+  line-height: 40px;
+  width: 100%;
+  height: 40px;
+  border-bottom: solid thin whitesmoke;
+  color: black;
+  background-color: white;
+  cursor: pointer;
+  padding-left: 20px;
+  font-weight: bold;
+}
+
+.baseList {
+  border-bottom: unset;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.roomBooking {
+  display: none;
+  padding: 15px;
+  position: absolute;
+  margin-top: 10px;
+  left: 0;
+  top: 100%;
+  z-index: 10000;
+  width: 80%;
+  border-radius: 5px;
+}
+
+.roomBooking._dataListDisplay {
+  display: flex;
 }

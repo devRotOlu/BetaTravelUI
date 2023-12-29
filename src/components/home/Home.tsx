@@ -4,7 +4,6 @@ import { Link, useNavigate, Outlet } from "react-router-dom";
 
 import Tab from "./Tab";
 import List from "./List";
-import Button from "../Button";
 
 import { useRouteEventListener } from "../../utils/useCustomHooks/useRouteEventListener";
 import { homeTabLinks } from "../../utils/data";
