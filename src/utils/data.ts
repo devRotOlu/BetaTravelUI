@@ -65,12 +65,6 @@ export type InputDropDownProps = {
   placeHolder?: string;
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   dataListClass?: string;
-  handleClick: (event: React.MouseEvent) => void;
-  handleFocus: () => void;
-};
-
-export type DataListProp = {
-  children: React.ReactNode;
 };
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -87,14 +81,17 @@ export type PaxButtonsProps = {
   minCount: number;
 };
 
-export type DataListWrapperProps = {
+export type InputWrapperProps = {
   children: ReactNode;
   icon: string;
   label: string;
   styleClass?: string;
 };
 
+export type PaxProps = {
+  children: React.ReactNode[];
+};
+
 export type RoomBookingProps = {
-  roomCount: number;
-  setRoomCount: React.Dispatch<React.SetStateAction<number>>;
+  roomIndex: number;
 };

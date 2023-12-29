@@ -1,8 +1,8 @@
 import { Icon } from "@iconify/react";
 
-import { DataListWrapperProps } from "../../../utils/data";
+import { InputWrapperProps } from "../../../utils/data";
 
-const DataListWrapper = ({ icon, label, children, styleClass }: DataListWrapperProps) => {
+const InputWrapper = ({ icon, label, children, styleClass }: InputWrapperProps) => {
   return (
     <li className={`w-100 position-relative dataListWrap ${styleClass}`} style={{ display: "grid", gridTemplateColumns: "max-content 1fr", gridTemplateRows: "30px 35px" }}>
       <span className="text-secondary" style={{ width: "100%", fontSize: "15px", gridColumn: "2/3", gridRow: "1/2", lineHeight: "30px" }}>
@@ -16,4 +16,4 @@ const DataListWrapper = ({ icon, label, children, styleClass }: DataListWrapperP
   );
 };
 
-export default DataListWrapper;
+export default InputWrapper;

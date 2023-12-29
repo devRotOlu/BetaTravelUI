@@ -1,9 +1,9 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 
-import Button from "../../Button";
+import Button from "../../../Button";
 
-import { PaxButtonsProps } from "../../../utils/data";
+import { PaxButtonsProps } from "../../../../utils/data";
 
 const PaxButtons = ({ count, setCount, minCount }: PaxButtonsProps) => {
   return (
