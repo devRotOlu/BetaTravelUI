@@ -18,13 +18,13 @@ const RoomBooking = () => {
     }
   }
   return (
-    <>
+    <ul id="roomBooking" className="roomBooking" style={{ backgroundColor: "white" }}>
       {_list}
       <li className=" d-flex justify-content-center gap-3 pb-4">
         <Button buttonClass="bookRoomBtn cancelRoomBtn" buttonType="button" buttonLabel="Cancel"></Button>
         <Button buttonClass="bookRoomBtn" buttonType="button" buttonLabel="Done"></Button>
       </li>
-    </>
+    </ul>
   );
 };
 

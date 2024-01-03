@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, SetStateAction } from "react";
 
 export const flightTabLinks = [
   {
@@ -57,14 +57,16 @@ export type FormInputProps = {
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export type InputDropDownProps = {
+export type DropDownProps = {
   children?: ReactNode;
   name: string;
-  id: string;
+  inputId: string;
   value: string;
   placeHolder?: string;
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  dataListClass?: string;
+  dropDownClass?: string;
+  dropDownId?: string;
+  handleFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
 };
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -95,3 +97,14 @@ export type PaxProps = {
 export type RoomBookingProps = {
   roomIndex: number;
 };
+
+export type ValuePiece = Date | null;
+export type Value = [ValuePiece, ValuePiece];
+
+export type BookingCalendarProps = {
+  date: Value;
+  setDate: React.Dispatch<SetStateAction<Value>>;
+};
+
+export const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

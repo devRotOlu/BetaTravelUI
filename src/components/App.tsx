@@ -14,6 +14,7 @@ import MultiCityBooking from "./home/flightBooking/MultiCityBooking";
 import RoundTripBooking from "./home/flightBooking/RoundTripBooking";
 import ContextWrapper from "../context/ContextWrapper";
 
+import "react-calendar/dist/Calendar.css";
 import "../assests/styles/App.css";
 
 function App() {

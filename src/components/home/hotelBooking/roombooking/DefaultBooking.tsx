@@ -1,19 +1,14 @@
-import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 
 import PaxButtons from "./PaxButtons";
 import Pax from "./Pax";
 import Button from "../../../Button";
 
-import useUseEvent from "../../../../utils/useCustomHooks/useUseEvent";
+import useRoomData from "../../../../utils/useCustomHooks/useRoomData";
 import { RoomBookingProps } from "../../../../utils/data";
 
 const DefaultBooking = ({ roomIndex }: RoomBookingProps) => {
-  const adultMinCount = 1;
-  const childMinCount = 0;
-  const [adultCount, setAdultCount] = useState(adultMinCount);
-  const [childCount, setChildCount] = useState(childMinCount);
-  const { setRoomCount } = useUseEvent(adultCount, childCount);
+  const { setRoomCount, childCount, setChildCount, adultCount, setAdultCount, adultMinCount, childMinCount } = useRoomData();
 
   return (
     <li className="d-flex flex-column gap-3" key={roomIndex}>

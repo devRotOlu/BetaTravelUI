@@ -241,4 +241,114 @@ option {
 
 .roomBooking._dataListDisplay {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.calendar {
+  display: none;
+  padding: 0;
+}
+
+/* .calendar > li {
+  width: 100%;
+  background-color: brown;
+} */
+
+.calendar._dataListDisplay {
+  position: absolute;
+  top: 50px;
+  z-index: 100000000;
+  left: 0;
+  display: block;
+  width: 100%;
+}
+
+.react-calendar {
+  width: 350px;
+  max-width: 100%;
+  background: white;
+  border: 1px solid white;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.125em;
+}
+
+.react-calendar__navigation {
+  background-color: darkblue;
+  color: white;
+  margin-bottom: 0;
+}
+
+.react-calendar__navigation__label {
+  width: 50%;
+  font-weight: bold;
+  color: white;
+}
+
+.react-calendar__navigation__arrow {
+  color: white;
+}
+
+.react-calendar__month-view__weekdays {
+  text-decoration: none;
+  margin-top: 0;
+  text-align: center;
+  background-color: rgb(234, 240, 241);
+  font-weight: 800;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 1px;
+  text-transform: uppercase;
+  font: inherit;
+  font-size: 0.75em;
+}
+.react-calendar__tile {
+  max-width: 100%;
+  background: none;
+  text-align: center;
+  font: inherit;
+  font-size: 0.9em;
+}
+
+.react-calendar__month-view__days__day--weekend {
+  color: black;
+}
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #757575;
+}
+.react-calendar__tile:enabled:hover {
+  background-color: lightcyan;
+}
+.react-calendar__tile:enabled:focus {
+  background: darkblue;
+  color: white;
+  border-radius: 5px;
+}
+.react-calendar__navigation button:enabled:hover {
+  background-color: darkblue;
+}
+.react-calendar__navigation button:enabled:focus {
+  background-color: darkblue;
+}
+.react-calendar__navigation button:disabled {
+  background-color: darkblue;
+}
+.react-calendar__tile--active {
+  background: darkblue;
+  color: white;
+  border-radius: 5px;
+}
+
+.react-calendar--doubleView {
+  width: 100%;
+}
+
+.react-calendar--doubleView .react-calendar__viewContainer {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 100%;
+}
+
+.react-calendar--doubleView .react-calendar__viewContainer > * {
+  width: 100%;
 }

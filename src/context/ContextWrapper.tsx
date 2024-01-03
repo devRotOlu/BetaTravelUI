@@ -6,6 +6,7 @@ import { getRouteLocationIndex } from "../utils/helperFunctions/helperFunction";
 
 type AppContextType = {
   flightLink: string;
+  displayClass: string;
 };
 
 type ContextProps = {
@@ -16,6 +17,7 @@ export const appContext = React.createContext({} as AppContextType);
 
 const ContextWrapper = ({ children }: ContextProps) => {
   const location = useLocation();
+  const displayClass = "_dataListDisplay";
 
   const { pathname } = location;
 
@@ -28,7 +30,7 @@ const ContextWrapper = ({ children }: ContextProps) => {
     }
   }, [pathname]);
 
-  return <appContext.Provider value={{ flightLink }}>{children}</appContext.Provider>;
+  return <appContext.Provider value={{ flightLink, displayClass }}>{children}</appContext.Provider>;
 };
 
 export default ContextWrapper;
