@@ -1,25 +1,28 @@
 import { Icon } from "@iconify/react";
 import Calendar from "react-calendar";
 
-import { BookingCalendarProps } from "../../../utils/data";
+import { BookingCalendarProps } from "../../utils/data";
+import { appContext } from "../../context/ContextWrapper";
+import { useContext } from "react";
 
-const BookingCalendar = ({ date, setDate }: BookingCalendarProps) => {
+const BookingCalendar = ({ setDate, showDoubleView, calendarId }: BookingCalendarProps) => {
   const handleClick = (event: React.MouseEvent) => event.stopPropagation();
+  const appData = useContext(appContext);
+  const { currentDate } = appData;
 
   return (
-    <div onClick={handleClick} id="calendarWrapper" className="calendar">
+    <div onClick={handleClick} id={calendarId} className="calendar">
       <Calendar
-        showDoubleView={true}
+        showDoubleView={showDoubleView}
         goToRangeStartOnSelect={false}
         allowPartialRange={true}
         selectRange={true}
-        minDate={new Date()}
+        minDate={currentDate}
         prevLabel={<Icon icon="wpf:previous" />}
         nextLabel={<Icon icon="wpf:next" />}
         minDetail="decade"
         next2Label={null}
         prev2Label={null}
-        tileClassName={["monthView ", "yearView"]}
         calendarType="gregory"
         onChange={(value) => {
           if (Array.isArray(value)) {
@@ -27,7 +30,6 @@ const BookingCalendar = ({ date, setDate }: BookingCalendarProps) => {
           }
         }}
         returnValue="range"
-        value={date}
       />
     </div>
   );

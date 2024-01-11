@@ -1,8 +1,12 @@
 import { useEffect, useContext } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Icon } from "@iconify/react";
 
 import Tab from "../Tab";
 import List from "../List";
+import Button from "../../Button";
+import QualityCheckMark from "../QualityCheckMark";
+import FlightContext from "./FlightContext";
 
 import { flightTabLinks } from "../../../utils/data";
 import { useRouteEventListener } from "../../../utils/useCustomHooks/useRouteEventListener";
@@ -29,12 +33,18 @@ const FlightBooking = () => {
     );
   });
   return (
-    <>
+    <FlightContext>
       <Tab ref={routeRef} className="flight_navTab d-flex justify-content-between px-1 mb-4">
         {links}
       </Tab>
       <Outlet />
-    </>
+      <Button buttonLabel="Search Flights" buttonType="submit">
+        <span>
+          <Icon icon="ion:chevron-forward-outline" />
+        </span>
+      </Button>
+      <QualityCheckMark />
+    </FlightContext>
   );
 };
 

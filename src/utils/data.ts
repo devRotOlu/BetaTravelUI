@@ -91,9 +91,13 @@ export type InputWrapperProps = {
 };
 
 export type PaxProps = {
-  children: React.ReactNode[];
+  children: ReactNode;
 };
-
+export type ChildPaxProps = {
+  children: ReactNode;
+  label: string;
+  ageRange: string;
+};
 export type RoomBookingProps = {
   roomIndex: number;
 };
@@ -102,9 +106,29 @@ export type ValuePiece = Date | null;
 export type Value = [ValuePiece, ValuePiece];
 
 export type BookingCalendarProps = {
-  date: Value;
+  calendarId: string;
   setDate: React.Dispatch<SetStateAction<Value>>;
+  showDoubleView: boolean;
 };
 
 export const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+export type SearchPromptProps = {
+  searchTerm: string;
+};
+
+export type PossibleLocationsProps = {
+  searchTerm: string;
+  previousLocations: string[];
+  previousSearches: string[];
+  children: ReactNode;
+};
+
+export type roomType = { roomId: number }[];
+
+type BookingOwnProps<E extends React.ElementType> = {
+  as?: E;
+};
+
+export type BookingButtonsProps<E extends React.ElementType> = BookingOwnProps<E> & Omit<React.ComponentProps<E>, keyof BookingOwnProps<E>>;

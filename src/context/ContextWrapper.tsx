@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import { flightTabLinks } from "../utils/data";
+import { flightTabLinks, months, days } from "../utils/data";
 import { getRouteLocationIndex } from "../utils/helperFunctions/helperFunction";
 
 type AppContextType = {
   flightLink: string;
   displayClass: string;
+  currentDate: Date;
+  currentMonth: string;
+  currentDay: string;
+  currentMonthDate: number;
 };
 
 type ContextProps = {
@@ -17,7 +21,11 @@ export const appContext = React.createContext({} as AppContextType);
 
 const ContextWrapper = ({ children }: ContextProps) => {
   const location = useLocation();
-  const displayClass = "_dataListDisplay";
+  const displayClass = "_displayClass";
+  const currentDate = new Date();
+  const currentMonth = months[currentDate.getMonth()];
+  const currentDay = days[currentDate.getDay()];
+  const currentMonthDate = currentDate.getDate();
 
   const { pathname } = location;
 
@@ -30,7 +38,7 @@ const ContextWrapper = ({ children }: ContextProps) => {
     }
   }, [pathname]);
 
-  return <appContext.Provider value={{ flightLink, displayClass }}>{children}</appContext.Provider>;
+  return <appContext.Provider value={{ flightLink, displayClass, currentDate, currentDay, currentMonth, currentMonthDate }}>{children}</appContext.Provider>;
 };
 
 export default ContextWrapper;

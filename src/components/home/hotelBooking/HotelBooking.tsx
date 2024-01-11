@@ -1,32 +1,21 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext, SetStateAction } from "react";
 import { Icon } from "@iconify/react";
+import debounce from "debounce";
 
 import InputWrapper from "../../formElements/formDataList/InputWrapper";
 import Button from "../../Button";
 import DataList from "../../formElements/DataList";
 import RoomBooking from "./roombooking/RoomBooking";
-import BookingCalendar from "./BookingCalendar";
+import BookingCalendar from "../BookingCalendar";
 import InputDropDown from "./InputDropDown";
-import { months, days } from "../../../utils/data";
+import QualityCheckMark from "../QualityCheckMark";
+import SearchPrompt from "../SearchPrompt";
 
 import { betaTravelAxios } from "../../../axios/axios";
 import { hotelContext } from "./HotelContext";
-import { Value } from "../../../utils/data";
+import { Value, months, days } from "../../../utils/data";
 import { appContext } from "../../../context/ContextWrapper";
-
-const getCities = async (city: string, func: (val: { country: string; dest_id: string; city_name: string }[]) => void) => {
-  const data = await betaTravelAxios.get("https://apidojo-booking-v1.p.rapidapi.com/locations/auto-complete", {
-    params: {
-      text: city,
-      languagecode: "en-us",
-    },
-    headers: {
-      "X-RapidAPI-Key": "2565c29410msh5d5d2f756f9eed5p130a89jsn0a7a959312b9",
-      "X-RapidAPI-Host": "apidojo-booking-v1.p.rapidapi.com",
-    },
-  });
-  func(data.data);
-};
+import useUseQuery from "../../../utils/useCustomHooks/useUseQuery";
 
 const HotelBooking = () => {
   const calendarId = "calendarWrapper";
@@ -36,7 +25,7 @@ const HotelBooking = () => {
   const [cities, setCities] = useState<{ country: string; dest_id: string; city_name: string }[]>([]);
   const hotelData = useContext(hotelContext);
   const appData = useContext(appContext);
-  const { displayClass } = appData;
+  const { displayClass, currentDate, currentDay, currentMonthDate, currentMonth } = appData;
   const { totalGuest, roomCount } = hotelData;
   const [hotelInfos, setHotelInfo] = useState({
     city: "",
@@ -44,11 +33,27 @@ const HotelBooking = () => {
     checkInDate: "",
     checkOutDate: "",
   });
-  const [date, setDate] = useState<Value>([new Date(), null]);
+  const [date, setDate] = useState<Value>([currentDate, null]);
   const handleOptionClick = (event: React.FormEvent<HTMLOptionElement>) => {
     dataListInputRef.current.disabled = true;
     setHotelInfo((prevObj) => ({ ...prevObj, city: event.currentTarget.value }));
   };
+
+  const { refetch } = useUseQuery(
+    "hotel-locations",
+    "https://apidojo-booking-v1.p.rapidapi.com/locations/auto-complete",
+    false,
+    {
+      text: hotelInfos.city,
+      languagecode: "en-us",
+    },
+    {
+      "X-RapidAPI-Key": "2565c29410msh5d5d2f756f9eed5p130a89jsn0a7a959312b9",
+      "X-RapidAPI-Host": "apidojo-booking-v1.p.rapidapi.com",
+    },
+    (data) => setCities(data.data),
+    () => setCities([])
+  );
 
   var _cities = [<option key="0">CITY, COUNTRY</option>];
 
@@ -72,11 +77,7 @@ const HotelBooking = () => {
   }
 
   if (!cities.length || hotelInfos.city.length < 3) {
-    _cities.push(
-      <option style={{ height: "230px", textAlign: "center", paddingTop: "20px", borderBottomRightRadius: "2px", borderBottomLeftRadius: "2px", borderBottom: "none", fontWeight: "normal" }} key={1}>
-        {hotelInfos.city.length >= 3 ? "" : "Keep typing to reveal list"}
-      </option>
-    );
+    _cities.push(<SearchPrompt key="2" searchTerm={hotelInfos.city} />);
   }
 
   useEffect(() => {
@@ -93,16 +94,9 @@ const HotelBooking = () => {
   }, [date]);
 
   useEffect(() => {
-    if (hotelInfos.city.length >= 3) {
-      try {
-        getCities(hotelInfos.city, (val: { country: string; dest_id: string; city_name: string }[]) => {
-          setCities(val);
-        });
-      } catch (error) {
-        setCities([]);
-      }
-    }
-  }, [hotelInfos.city]);
+    if (hotelInfos.city.length >= 3) refetch();
+    else setCities([]);
+  }, [hotelInfos.city, refetch]);
 
   useEffect(() => {
     setHotelInfo((prevData) => ({ ...prevData, roomGuestCount: `${roomCount} Room, ${totalGuest} Guest` }));
@@ -131,26 +125,38 @@ const HotelBooking = () => {
   return (
     <>
       <ul className="p-0 w-100 d-flex flex-column gap-3">
-        <InputWrapper icon="ic:twotone-flag" label="Going to?">
-          <DataList name="city" inputId="city" value={hotelInfos.city} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, city: e.target.value }))} placeHolder="City or hotel name" ref={dataListInputRef} handleFocus={handleDatalistFocus} dropDownId={dataListId}>
-            {_cities}
-          </DataList>
-        </InputWrapper>
-        <InputWrapper label="Rooms and guests" icon="material-symbols:person">
-          <li className="w-100">
-            <InputDropDown name={"roomGuestCount"} inputId="room-guest" value={hotelInfos.roomGuestCount} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, roomGuestCount: e.target.value }))} placeHolder="1 Room, 1 Guest" dropDownId={roomBookingId} handleFocus={handleRoomBookingFocus}>
-              <RoomBooking />
-            </InputDropDown>
-          </li>
-        </InputWrapper>
+        <li className="w-100">
+          <InputWrapper icon="ic:twotone-flag" label="Going to?">
+            <DataList name="city" inputId="city" value={hotelInfos.city} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, city: e.target.value }))} placeHolder="City or hotel name" ref={dataListInputRef} handleFocus={handleDatalistFocus} dropDownId={dataListId}>
+              {_cities}
+            </DataList>
+          </InputWrapper>
+        </li>
+        <li className="w-100">
+          <InputWrapper label="Rooms and guests" icon="material-symbols:person">
+            <div className="w-100">
+              <InputDropDown name={"roomGuestCount"} inputId="room-guest" value={hotelInfos.roomGuestCount} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, roomGuestCount: e.target.value }))} placeHolder="1 Room, 1 Guest" dropDownId={roomBookingId} handleFocus={handleRoomBookingFocus}>
+                <RoomBooking />
+              </InputDropDown>
+            </div>
+          </InputWrapper>
+        </li>
         <li style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", position: "relative" }}>
           <InputWrapper styleClass="hotelCheckIn" label="Check-in" icon="ph:calendar-thin">
-            <InputDropDown name={"checkInDate"} inputId="check-in" value={hotelInfos.checkInDate} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, checkInDate: e.target.value }))} placeHolder="Mon, Dec 25" dropDownId={calendarId} handleFocus={handleCalendarFocus} />
+            <InputDropDown
+              name="checkInDate"
+              inputId="check-in"
+              value={hotelInfos.checkInDate}
+              handleChange={(e) => setHotelInfo((prev) => ({ ...prev, checkInDate: e.target.value }))}
+              placeHolder={`${currentDay}, ${currentMonth},${currentMonthDate}`}
+              dropDownId={calendarId}
+              handleFocus={handleCalendarFocus}
+            />
           </InputWrapper>
           <InputWrapper styleClass="hotelCheckOut" label="Check-out" icon="ph:calendar-thin">
             <InputDropDown name={"checkOutDate"} inputId="Check-out" value={hotelInfos.checkOutDate} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, checkOutDate: e.target.value }))} placeHolder="Wed, Dec 27" dropDownId={calendarId} handleFocus={handleCalendarFocus} />
           </InputWrapper>
-          <BookingCalendar date={date} setDate={setDate} />
+          <BookingCalendar showDoubleView={true} setDate={setDate} calendarId={calendarId} />
         </li>
       </ul>
       <Button buttonLabel="Search Hotels" buttonType="submit">
@@ -158,12 +164,7 @@ const HotelBooking = () => {
           <Icon icon="ion:chevron-forward-outline" />
         </span>
       </Button>
-      <p className="mt-4 d-flex justify-content-center text-light gap-2">
-        <span style={{ color: "black" }}>
-          <Icon style={{ color: "inherit" }} icon="emojione:white-heavy-check-mark" />
-        </span>
-        we offer the best deals in the industry
-      </p>
+      <QualityCheckMark />
     </>
   );
 };
