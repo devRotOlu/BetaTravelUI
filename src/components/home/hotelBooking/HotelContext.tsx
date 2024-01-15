@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useRef, useState } from "react";
+import React, { SetStateAction, useRef, useState } from "react";
 
 import { roomType } from "../../../utils/data";
 
@@ -21,10 +21,10 @@ const HotelContext = ({ children }: hotelContextProps) => {
   const roomIdRef = useRef(1);
   const roomCountRef = useRef(1);
   const [rooms, setRooms] = useState<roomType>([{ roomId: roomIdRef.current }]);
-  useEffect(() => {
-    if (roomCountRef.current < rooms.length) ++roomIdRef.current;
-    roomCountRef.current = rooms.length;
-  }, [rooms.length]);
+
+  if (roomCountRef.current < rooms.length) ++roomIdRef.current;
+  if (roomCountRef.current !== rooms.length) roomCountRef.current = rooms.length;
+
   return <hotelContext.Provider value={{ totalGuest, setTotalGuest, rooms, setRooms, lastRoomId: roomIdRef.current, roomCount: roomCountRef.current }}>{children}</hotelContext.Provider>;
 };
 

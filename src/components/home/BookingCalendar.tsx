@@ -5,13 +5,13 @@ import { BookingCalendarProps } from "../../utils/data";
 import { appContext } from "../../context/ContextWrapper";
 import { useContext } from "react";
 
-const BookingCalendar = ({ setDate, showDoubleView, calendarId }: BookingCalendarProps) => {
+const BookingCalendar = ({ setDate, showDoubleView }: BookingCalendarProps) => {
   const handleClick = (event: React.MouseEvent) => event.stopPropagation();
   const appData = useContext(appContext);
   const { currentDate } = appData;
 
   return (
-    <div onClick={handleClick} id={calendarId} className="calendar">
+    <div onClick={handleClick} className="calendar">
       <Calendar
         showDoubleView={showDoubleView}
         goToRangeStartOnSelect={false}

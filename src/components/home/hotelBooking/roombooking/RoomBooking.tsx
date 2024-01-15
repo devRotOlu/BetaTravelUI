@@ -3,6 +3,7 @@ import { useContext } from "react";
 import NewBooking from "./NewBooking";
 import DefaultBooking from "./DefaultBooking";
 import BookingButtons from "../../BookingButtons";
+import Wrapper from "../../Wrapper";
 
 import { hotelContext } from "../HotelContext";
 
@@ -14,10 +15,10 @@ const RoomBooking = () => {
     return <NewBooking roomIndex={index} key={roomId} />;
   });
   return (
-    <ul id="roomBooking" className="roomBooking" style={{ backgroundColor: "white" }}>
+    <Wrapper as="ul">
       {roomBookings}
       <BookingButtons as="li" />
-    </ul>
+    </Wrapper>
   );
 };
 

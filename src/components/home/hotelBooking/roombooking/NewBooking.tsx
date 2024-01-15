@@ -1,8 +1,8 @@
 import { Icon } from "@iconify/react";
 
 import Button from "../../../Button";
-import Pax from "./Pax";
-import PaxButtons from "./PaxButtons";
+import Pax from "../../Pax";
+import PaxButtons from "../../PaxButtons";
 import ChildPax from "../../ChildPax";
 import AdultPax from "../../AdultPax";
 
@@ -10,23 +10,30 @@ import { RoomBookingProps } from "../../../../utils/data";
 import useBookingData from "../../../../utils/useCustomHooks/useBookingData";
 
 const NewBooking = ({ roomIndex }: RoomBookingProps) => {
-  const { setRooms, setTotalGuest, childMinCount, childCount, setChildCount, adultMinCount, adultCount, setAdultCount } = useBookingData();
+  const {
+    setRooms,
+    setTotalGuest,
+    childMinCount,
+    adultMinCount,
+    guestCount: { adults, children },
+    setGuestCount,
+  } = useBookingData();
   return (
     <li className="d-flex flex-column gap-3">
       <span className="text-secondary">Room {roomIndex + 1}</span>
       <Pax>
         <AdultPax>
-          <PaxButtons minCount={adultMinCount} count={adultCount} setCount={setAdultCount} />
+          <PaxButtons minCount={adultMinCount} count={adults} setCount={setGuestCount} guestType="adults" />
         </AdultPax>
         <ChildPax ageRange="2 - 11yrs" label="Children">
-          <PaxButtons minCount={childMinCount} count={childCount} setCount={setChildCount} />
+          <PaxButtons minCount={childMinCount} count={children} setCount={setGuestCount} guestType="children" />
         </ChildPax>
       </Pax>
       <Button
         buttonClass="roomBtn"
         handleClick={(event: React.MouseEvent) => {
           event.stopPropagation();
-          setTotalGuest((prevTotal) => prevTotal - (adultCount + childCount));
+          setTotalGuest((prevTotal) => prevTotal - (adults + children));
           setRooms((rooms) => {
             return rooms.filter((_, index) => index !== roomIndex);
           });

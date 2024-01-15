@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react";
 
-import PaxButtons from "./PaxButtons";
-import Pax from "./Pax";
+import PaxButtons from "../../PaxButtons";
+import Pax from "../../Pax";
 import Button from "../../../Button";
 import ChildPax from "../../ChildPax";
 import AdultPax from "../../AdultPax";
@@ -10,7 +10,14 @@ import useBookingData from "../../../../utils/useCustomHooks/useBookingData";
 import { RoomBookingProps } from "../../../../utils/data";
 
 const DefaultBooking = ({ roomIndex }: RoomBookingProps) => {
-  const { setRooms, childCount, setChildCount, adultCount, setAdultCount, adultMinCount, childMinCount, lastRoomId } = useBookingData();
+  const {
+    setRooms,
+    guestCount: { adults, children },
+    setGuestCount,
+    adultMinCount,
+    childMinCount,
+    lastRoomId,
+  } = useBookingData();
 
   return (
     <li className="d-flex flex-column gap-3">
@@ -32,10 +39,10 @@ const DefaultBooking = ({ roomIndex }: RoomBookingProps) => {
       </span>
       <Pax>
         <AdultPax>
-          <PaxButtons minCount={adultMinCount} count={adultCount} setCount={setAdultCount} />
+          <PaxButtons minCount={adultMinCount} count={adults} setCount={setGuestCount} guestType="adults" />
         </AdultPax>
         <ChildPax label="Children" ageRange="2 - 11yrs">
-          <PaxButtons minCount={childMinCount} count={childCount} setCount={setChildCount} />
+          <PaxButtons minCount={childMinCount} count={children} setCount={setGuestCount} guestType="children" />
         </ChildPax>
       </Pax>
     </li>

@@ -6,7 +6,6 @@ import { getRouteLocationIndex } from "../utils/helperFunctions/helperFunction";
 
 type AppContextType = {
   flightLink: string;
-  displayClass: string;
   currentDate: Date;
   currentMonth: string;
   currentDay: string;
@@ -21,7 +20,6 @@ export const appContext = React.createContext({} as AppContextType);
 
 const ContextWrapper = ({ children }: ContextProps) => {
   const location = useLocation();
-  const displayClass = "_displayClass";
   const currentDate = new Date();
   const currentMonth = months[currentDate.getMonth()];
   const currentDay = days[currentDate.getDay()];
@@ -38,7 +36,7 @@ const ContextWrapper = ({ children }: ContextProps) => {
     }
   }, [pathname]);
 
-  return <appContext.Provider value={{ flightLink, displayClass, currentDate, currentDay, currentMonth, currentMonthDate }}>{children}</appContext.Provider>;
+  return <appContext.Provider value={{ flightLink, currentDate, currentDay, currentMonth, currentMonthDate }}>{children}</appContext.Provider>;
 };
 
 export default ContextWrapper;

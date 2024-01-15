@@ -65,8 +65,9 @@ export type DropDownProps = {
   placeHolder?: string;
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   dropDownClass?: string;
-  dropDownId?: string;
   handleFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  inputClass?: string;
+  isFocused?: boolean;
 };
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -77,10 +78,13 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   handleClick?: (event: React.MouseEvent) => void;
 }
 
+export type guestCountType = { adults: number; children: number; infants: number };
+
 export type PaxButtonsProps = {
   count: number;
-  setCount: React.Dispatch<React.SetStateAction<number>>;
+  setCount: React.Dispatch<React.SetStateAction<guestCountType>>;
   minCount: number;
+  guestType: string;
 };
 
 export type InputWrapperProps = {
@@ -106,7 +110,6 @@ export type ValuePiece = Date | null;
 export type Value = [ValuePiece, ValuePiece];
 
 export type BookingCalendarProps = {
-  calendarId: string;
   setDate: React.Dispatch<SetStateAction<Value>>;
   showDoubleView: boolean;
 };
@@ -132,3 +135,13 @@ type BookingOwnProps<E extends React.ElementType> = {
 };
 
 export type BookingButtonsProps<E extends React.ElementType> = BookingOwnProps<E> & Omit<React.ComponentProps<E>, keyof BookingOwnProps<E>>;
+
+export type BasicFlightFormElementsProps = {
+  index: number;
+};
+
+type WrapperOwnProps<E extends React.ElementType> = {
+  children: React.ReactNode;
+  as?: E;
+};
+export type WrapperProps<E extends React.ElementType> = WrapperOwnProps<E> & Omit<React.ComponentProps<E>, keyof WrapperOwnProps<E>>;

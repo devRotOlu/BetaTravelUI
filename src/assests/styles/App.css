@@ -154,6 +154,9 @@ a:active {
 
 .appInputs {
   width: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
 }
 
 .appInputs > input {
@@ -163,6 +166,15 @@ a:active {
   border-radius: 5px;
   outline: darkblue;
   border-color: darkblue;
+}
+
+.appInputs.passengerCount {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.appInputs.flightClass > input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .appInputs.bookingInput > input {
@@ -191,7 +203,6 @@ a:active {
 }
 
 .appDataList {
-  display: none;
   padding: 0;
   padding-top: 5px;
   background-color: orange;
@@ -203,12 +214,10 @@ a:active {
   height: fit-content;
   border-radius: 2px;
   cursor: pointer;
+  display: block;
 }
+
 .dataListTag {
-  display: none;
-}
-.dataListTag._displayClass,
-.appDataList._displayClass {
   display: block;
 }
 
@@ -234,8 +243,12 @@ a:active {
   border-bottom-right-radius: 2px;
 }
 
+#passengerCount {
+  border-radius: 2px;
+  padding: 0 15px;
+}
+
 .roomBooking {
-  display: none;
   padding: 15px;
   position: absolute;
   margin-top: 10px;
@@ -244,25 +257,13 @@ a:active {
   z-index: 10000;
   width: 80%;
   border-radius: 5px;
-}
-
-.roomBooking._displayClass {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
 .calendar {
-  display: none;
   padding: 0;
-}
-
-/* .calendar > li {
-  width: 100%;
-  background-color: brown;
-} */
-
-.calendar._displayClass {
   position: absolute;
   top: 50px;
   z-index: 100000000;
@@ -270,6 +271,11 @@ a:active {
   display: block;
   width: 100%;
 }
+
+/* .calendar > li {
+  width: 100%;
+  background-color: brown;
+} */
 
 .react-calendar {
   width: 350px;

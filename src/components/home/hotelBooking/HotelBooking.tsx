@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext, SetStateAction } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Icon } from "@iconify/react";
 import debounce from "debounce";
 
@@ -7,7 +7,7 @@ import Button from "../../Button";
 import DataList from "../../formElements/DataList";
 import RoomBooking from "./roombooking/RoomBooking";
 import BookingCalendar from "../BookingCalendar";
-import InputDropDown from "./InputDropDown";
+import InputDropDown from "../../formElements/InputDropDown";
 import QualityCheckMark from "../QualityCheckMark";
 import SearchPrompt from "../SearchPrompt";
 
@@ -16,16 +16,14 @@ import { hotelContext } from "./HotelContext";
 import { Value, months, days } from "../../../utils/data";
 import { appContext } from "../../../context/ContextWrapper";
 import useUseQuery from "../../../utils/useCustomHooks/useUseQuery";
+import useAllisBlurred from "../../../utils/useCustomHooks/useAllisBlurred";
 
 const HotelBooking = () => {
-  const calendarId = "calendarWrapper";
-  const dataListId = "dataList";
-  const roomBookingId = "roomBooking";
   const dataListInputRef = useRef<HTMLInputElement>(null!);
   const [cities, setCities] = useState<{ country: string; dest_id: string; city_name: string }[]>([]);
   const hotelData = useContext(hotelContext);
   const appData = useContext(appContext);
-  const { displayClass, currentDate, currentDay, currentMonthDate, currentMonth } = appData;
+  const { currentDate, currentDay, currentMonthDate, currentMonth } = appData;
   const { totalGuest, roomCount } = hotelData;
   const [hotelInfos, setHotelInfo] = useState({
     city: "",
@@ -102,32 +100,28 @@ const HotelBooking = () => {
     setHotelInfo((prevData) => ({ ...prevData, roomGuestCount: `${roomCount} Room, ${totalGuest} Guest` }));
   }, [roomCount, totalGuest]);
 
-  const handleCalendarFocus = (event: React.FocusEvent<HTMLInputElement>) => {
-    document.getElementById(calendarId)!.classList.add(displayClass);
-    document.getElementById(roomBookingId)!.classList.remove(displayClass);
-    document.getElementById(dataListId)!.classList.remove(displayClass);
-    event.currentTarget.disabled = true;
+  const [isFocused, setIsFocused] = useState({
+    dataListIsFocused: false,
+    roomBookingIsFocused: false,
+    calendarIsFocused: false,
+  });
+
+  const { dataListIsFocused, roomBookingIsFocused, calendarIsFocused } = isFocused;
+
+  const handleFocus = (focusedInput: string) => {
+    setIsFocused(() => ({ dataListIsFocused: focusedInput === "dataListIsFocused", roomBookingIsFocused: focusedInput === "roomBookingIsFocused", calendarIsFocused: focusedInput === "calendarIsFocused" }));
   };
 
-  const handleRoomBookingFocus = (event: React.FocusEvent<HTMLInputElement>) => {
-    document.getElementById(roomBookingId)!.classList.add(displayClass);
-    document.getElementById(dataListId)!.classList.remove(displayClass);
-    document.getElementById(calendarId)!.classList.remove(displayClass);
-    event.currentTarget.disabled = true;
-  };
-
-  const handleDatalistFocus = () => {
-    document.getElementById(dataListId)!.classList.add(displayClass);
-    document.getElementById(roomBookingId)!.classList.remove(displayClass);
-    document.getElementById(calendarId)!.classList.remove(displayClass);
-  };
+  useAllisBlurred(() => {
+    setIsFocused(() => ({ dataListIsFocused: false, roomBookingIsFocused: false, calendarIsFocused: false }));
+  });
 
   return (
     <>
       <ul className="p-0 w-100 d-flex flex-column gap-3">
         <li className="w-100">
           <InputWrapper icon="ic:twotone-flag" label="Going to?">
-            <DataList name="city" inputId="city" value={hotelInfos.city} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, city: e.target.value }))} placeHolder="City or hotel name" ref={dataListInputRef} handleFocus={handleDatalistFocus} dropDownId={dataListId}>
+            <DataList name="city" inputId="city" value={hotelInfos.city} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, city: e.target.value }))} placeHolder="City or hotel name" ref={dataListInputRef} handleFocus={() => handleFocus("dataListIsFocused")} isFocused={dataListIsFocused}>
               {_cities}
             </DataList>
           </InputWrapper>
@@ -135,7 +129,15 @@ const HotelBooking = () => {
         <li className="w-100">
           <InputWrapper label="Rooms and guests" icon="material-symbols:person">
             <div className="w-100">
-              <InputDropDown name={"roomGuestCount"} inputId="room-guest" value={hotelInfos.roomGuestCount} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, roomGuestCount: e.target.value }))} placeHolder="1 Room, 1 Guest" dropDownId={roomBookingId} handleFocus={handleRoomBookingFocus}>
+              <InputDropDown
+                name={"roomGuestCount"}
+                inputId="room-guest"
+                value={hotelInfos.roomGuestCount}
+                handleChange={(e) => setHotelInfo((prev) => ({ ...prev, roomGuestCount: e.target.value }))}
+                placeHolder="1 Room, 1 Guest"
+                handleFocus={() => handleFocus("roomBookingIsFocused")}
+                isFocused={roomBookingIsFocused}
+              >
                 <RoomBooking />
               </InputDropDown>
             </div>
@@ -149,14 +151,13 @@ const HotelBooking = () => {
               value={hotelInfos.checkInDate}
               handleChange={(e) => setHotelInfo((prev) => ({ ...prev, checkInDate: e.target.value }))}
               placeHolder={`${currentDay}, ${currentMonth},${currentMonthDate}`}
-              dropDownId={calendarId}
-              handleFocus={handleCalendarFocus}
+              handleFocus={() => handleFocus("calendarIsFocused")}
             />
           </InputWrapper>
           <InputWrapper styleClass="hotelCheckOut" label="Check-out" icon="ph:calendar-thin">
-            <InputDropDown name={"checkOutDate"} inputId="Check-out" value={hotelInfos.checkOutDate} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, checkOutDate: e.target.value }))} placeHolder="Wed, Dec 27" dropDownId={calendarId} handleFocus={handleCalendarFocus} />
+            <InputDropDown name={"checkOutDate"} inputId="Check-out" value={hotelInfos.checkOutDate} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, checkOutDate: e.target.value }))} placeHolder="Wed, Dec 27" handleFocus={() => handleFocus("calendarIsFocused")} />
           </InputWrapper>
-          <BookingCalendar showDoubleView={true} setDate={setDate} calendarId={calendarId} />
+          {calendarIsFocused && <BookingCalendar showDoubleView={true} setDate={setDate} />}
         </li>
       </ul>
       <Button buttonLabel="Search Hotels" buttonType="submit">
