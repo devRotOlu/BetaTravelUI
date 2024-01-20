@@ -78,13 +78,21 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   handleClick?: (event: React.MouseEvent) => void;
 }
 
-export type guestCountType = { adults: number; children: number; infants: number };
+// export type guestCountType = { adults: number; children: number; infants: number };
+
+export type roomGuestType = {
+  adults: number;
+  children: number;
+  infants: number;
+  isIntialRender: boolean;
+}[];
 
 export type PaxButtonsProps = {
   count: number;
-  setCount: React.Dispatch<React.SetStateAction<guestCountType>>;
+  setCount: React.Dispatch<React.SetStateAction<roomGuestType>>;
   minCount: number;
   guestType: string;
+  roomIndex: number;
 };
 
 export type InputWrapperProps = {

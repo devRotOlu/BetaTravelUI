@@ -1,6 +1,6 @@
 import { useState, Dispatch, SetStateAction, createContext } from "react";
 
-import { guestCountType } from "../../../utils/data";
+import { roomGuestType } from "../../../utils/data";
 
 type flightDetailsType = {
   depart: string;
@@ -20,8 +20,8 @@ type IsFocusedType = {
 type flightContextType = {
   flightDetails: flightDetailsType[];
   setFlightDetails: Dispatch<SetStateAction<flightDetailsType[]>>;
-  passengerCount: guestCountType;
-  setPassengerCount: Dispatch<SetStateAction<guestCountType>>;
+  passengerCount: roomGuestType;
+  setPassengerCount: Dispatch<SetStateAction<roomGuestType>>;
   isFocused: IsFocusedType;
   setIsFocused: Dispatch<SetStateAction<IsFocusedType>>;
   blurAll: () => void;
@@ -59,7 +59,7 @@ const FlightContext = ({ children }: flightContextProps) => {
       flightClass: false,
     });
   const [flightDetails, setFlightDetails] = useState(() => [_flightDetails, _flightDetails]);
-  const [passengerCount, setPassengerCount] = useState({ adults: 1, children: 0, infants: 0 });
+  const [passengerCount, setPassengerCount] = useState([{ adults: 1, children: 0, infants: 0, isIntialRender: true }]);
   return <flightContext.Provider value={{ flightDetails, setFlightDetails, passengerCount, setPassengerCount, isFocused, setIsFocused, blurAll }}>{children}</flightContext.Provider>;
 };
 

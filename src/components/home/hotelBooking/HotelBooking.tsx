@@ -31,10 +31,12 @@ const HotelBooking = () => {
     checkInDate: "",
     checkOutDate: "",
   });
+  const [prevCity, setPrevCity] = useState(hotelInfos.city);
   const [date, setDate] = useState<Value>([currentDate, null]);
-  const handleOptionClick = (event: React.FormEvent<HTMLOptionElement>) => {
+  const handleOptionClick = (event: React.MouseEvent<HTMLOptionElement>) => {
     dataListInputRef.current.disabled = true;
     setHotelInfo((prevObj) => ({ ...prevObj, city: event.currentTarget.value }));
+    console.log(event.currentTarget, "target");
   };
 
   const { refetch } = useUseQuery(
@@ -78,27 +80,27 @@ const HotelBooking = () => {
     _cities.push(<SearchPrompt key="2" searchTerm={hotelInfos.city} />);
   }
 
-  useEffect(() => {
-    const date1 = date[0];
-    const date2 = date[1];
-    if (!date2 && date1) {
-      const day = date1.getDay();
-      const month = date1.getMonth();
-      const date = date1.getDate();
-      setHotelInfo((prev) => ({ ...prev, checkInDate: `${days[day]}, ${months[month]} ${date}`, checkOutDate: `${days[day]}, ${months[month]} ${date}` }));
-    } else if (date1 && date2) {
-      setHotelInfo((prev) => ({ ...prev, checkInDate: `${days[date1.getDay()]}, ${months[date1.getMonth()]} ${date1.getDate()}`, checkOutDate: `${days[date2.getDay()]}, ${months[date2.getMonth()]} ${date2.getDate()}` }));
-    }
-  }, [date]);
+  var checkInDate = "",
+    checkOutDate = "",
+    roomGuestCount = `${roomCount} Room, ${totalGuest} Guest`;
+  const date1 = date[0];
+  const date2 = date[1];
+  if (!date2 && date1) {
+    const day = date1.getDay();
+    const month = date1.getMonth();
+    const date = date1.getDate();
+    checkInDate = `${days[day]}, ${months[month]} ${date}`;
+    checkOutDate = `${days[day]}, ${months[month]} ${date}`;
+  } else if (date1 && date2) {
+    checkInDate = `${days[date1.getDay()]}, ${months[date1.getMonth()]} ${date1.getDate()}`;
+    checkOutDate = `${days[date2.getDay()]}, ${months[date2.getMonth()]} ${date2.getDate()}`;
+  }
 
-  useEffect(() => {
+  if (prevCity !== hotelInfos.city) {
     if (hotelInfos.city.length >= 3) refetch();
-    else setCities([]);
-  }, [hotelInfos.city, refetch]);
-
-  useEffect(() => {
-    setHotelInfo((prevData) => ({ ...prevData, roomGuestCount: `${roomCount} Room, ${totalGuest} Guest` }));
-  }, [roomCount, totalGuest]);
+    else if (cities.length) setCities([]);
+    setPrevCity(hotelInfos.city);
+  }
 
   const [isFocused, setIsFocused] = useState({
     dataListIsFocused: false,
@@ -132,7 +134,7 @@ const HotelBooking = () => {
               <InputDropDown
                 name={"roomGuestCount"}
                 inputId="room-guest"
-                value={hotelInfos.roomGuestCount}
+                value={roomGuestCount}
                 handleChange={(e) => setHotelInfo((prev) => ({ ...prev, roomGuestCount: e.target.value }))}
                 placeHolder="1 Room, 1 Guest"
                 handleFocus={() => handleFocus("roomBookingIsFocused")}
@@ -145,17 +147,10 @@ const HotelBooking = () => {
         </li>
         <li style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", position: "relative" }}>
           <InputWrapper styleClass="hotelCheckIn" label="Check-in" icon="ph:calendar-thin">
-            <InputDropDown
-              name="checkInDate"
-              inputId="check-in"
-              value={hotelInfos.checkInDate}
-              handleChange={(e) => setHotelInfo((prev) => ({ ...prev, checkInDate: e.target.value }))}
-              placeHolder={`${currentDay}, ${currentMonth},${currentMonthDate}`}
-              handleFocus={() => handleFocus("calendarIsFocused")}
-            />
+            <InputDropDown name="checkInDate" inputId="check-in" value={checkInDate} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, checkInDate: e.target.value }))} placeHolder={`${currentDay}, ${currentMonth},${currentMonthDate}`} handleFocus={() => handleFocus("calendarIsFocused")} />
           </InputWrapper>
           <InputWrapper styleClass="hotelCheckOut" label="Check-out" icon="ph:calendar-thin">
-            <InputDropDown name={"checkOutDate"} inputId="Check-out" value={hotelInfos.checkOutDate} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, checkOutDate: e.target.value }))} placeHolder="Wed, Dec 27" handleFocus={() => handleFocus("calendarIsFocused")} />
+            <InputDropDown name={"checkOutDate"} inputId="Check-out" value={checkOutDate} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, checkOutDate: e.target.value }))} placeHolder="Wed, Dec 27" handleFocus={() => handleFocus("calendarIsFocused")} />
           </InputWrapper>
           {calendarIsFocused && <BookingCalendar showDoubleView={true} setDate={setDate} />}
         </li>

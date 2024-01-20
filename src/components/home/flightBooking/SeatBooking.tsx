@@ -13,11 +13,12 @@ type SeatBookingProps = {
 const SeatBooking = ({ inputClass }: SeatBookingProps) => {
   const flightData = useContext(flightContext);
   const {
-    passengerCount: { adults, children, infants },
+    passengerCount,
     blurAll,
     isFocused: { seatBooking },
     setIsFocused,
   } = flightData;
+  const { adults, children, infants } = passengerCount[0];
   useAllisBlurred(blurAll);
   const handleFocused = () => {
     setIsFocused({

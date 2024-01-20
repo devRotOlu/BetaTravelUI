@@ -1,7 +1,7 @@
-import React, { useEffect, useContext, useRef, SetStateAction, useState } from "react";
+import React, { useContext, SetStateAction, useEffect, useRef } from "react";
 
 import { hotelContext } from "../../components/home/hotelBooking/HotelContext";
-import { roomType, guestCountType } from "../data";
+import { roomType, roomGuestType } from "../data";
 
 type BookingData = {
   setRooms: React.Dispatch<SetStateAction<roomType>>;
@@ -10,23 +10,19 @@ type BookingData = {
   childMinCount: number;
   roomCount: number;
   lastRoomId: number;
-  guestCount: guestCountType;
-  setGuestCount: React.Dispatch<SetStateAction<guestCountType>>;
+  roomGuests: roomGuestType;
+  setRoomGuests: React.Dispatch<SetStateAction<roomGuestType>>;
 };
 
-const useBookingData = (): BookingData => {
+const useBookingData = (roomIndex: number): BookingData => {
   const adultMinCount = 1;
   const childMinCount = 0;
-  const [guestCount, setGuestCount] = useState(() => ({
-    adults: adultMinCount,
-    children: childMinCount,
-    infants: 0,
-  }));
-  const { adults, children } = guestCount;
 
   const hotelData = useContext(hotelContext);
-  const { setTotalGuest, setRooms, roomCount, lastRoomId } = hotelData;
-  const prevTotal = useRef(adultMinCount);
+  const { setTotalGuest, setRooms, roomCount, lastRoomId, roomGuests, setRoomGuests } = hotelData;
+  const { adults, children, isIntialRender } = roomGuests[roomIndex];
+  const prevTotal = useRef(adults + children);
+
   useEffect(() => {
     if (prevTotal.current !== adults + children) {
       if (prevTotal.current < adults + children) {
@@ -35,11 +31,19 @@ const useBookingData = (): BookingData => {
         setTotalGuest((prevCount) => --prevCount);
       }
       prevTotal.current = adults + children;
-    } else {
-      setTotalGuest((prevCount) => prevCount + adults);
     }
-  }, [adults, children, setTotalGuest]);
-  return { setRooms, setTotalGuest, adultMinCount, childMinCount, roomCount, lastRoomId, guestCount, setGuestCount };
+    if (isIntialRender) {
+      setRoomGuests((prevGuests) => {
+        return prevGuests.map((room, index) => {
+          if (index === roomIndex) {
+            return { ...room, isIntialRender: false };
+          }
+          return room;
+        });
+      });
+    }
+  }, [adults, children, isIntialRender, setTotalGuest, setRoomGuests, roomIndex]);
+  return { setRooms, setTotalGuest, adultMinCount, childMinCount, roomCount, lastRoomId, roomGuests, setRoomGuests: hotelData.setRoomGuests };
 };
 
 export default useBookingData;
