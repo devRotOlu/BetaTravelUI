@@ -1,13 +1,12 @@
 import React, { SetStateAction, useState } from "react";
 
-import { roomType, roomGuestType } from "../../../utils/data";
+import { roomType, roomGuestType } from "../utils/data";
 
 type hotelContextType = {
   totalGuest: number;
   setTotalGuest: React.Dispatch<SetStateAction<number>>;
   rooms: roomType;
   setRooms: React.Dispatch<SetStateAction<roomType>>;
-  lastRoomId: number;
   roomCount: number;
   roomGuests: roomGuestType;
   setRoomGuests: React.Dispatch<SetStateAction<roomGuestType>>;
@@ -20,14 +19,10 @@ export const hotelContext = React.createContext({} as hotelContextType);
 
 const HotelContext = ({ children }: hotelContextProps) => {
   const [totalGuest, setTotalGuest] = useState(() => 1);
-  const [lastRoomId, setLastRoomId] = useState(() => 1);
-  const [rooms, setRooms] = useState<roomType>(() => [{ roomId: lastRoomId }]);
+  const [rooms, setRooms] = useState<roomType>(() => [{ roomId: 1 }]);
   const [roomCount, setRoomCount] = useState(() => rooms.length);
   if (roomCount !== rooms.length) {
-    if (roomCount < rooms.length) {
-      setLastRoomId((lastRoomId) => ++lastRoomId);
-      setTotalGuest((prevCount) => ++prevCount);
-    }
+    if (roomCount < rooms.length) setTotalGuest((prevCount) => ++prevCount);
     setRoomCount(rooms.length);
   }
   const [roomGuests, setRoomGuests] = useState<roomGuestType>(() => [
@@ -39,7 +34,7 @@ const HotelContext = ({ children }: hotelContextProps) => {
     },
   ]);
 
-  return <hotelContext.Provider value={{ totalGuest, setTotalGuest, rooms, setRooms, lastRoomId, roomCount, roomGuests, setRoomGuests }}>{children}</hotelContext.Provider>;
+  return <hotelContext.Provider value={{ totalGuest, setTotalGuest, rooms, setRooms, roomCount, roomGuests, setRoomGuests }}>{children}</hotelContext.Provider>;
 };
 
 export default HotelContext;

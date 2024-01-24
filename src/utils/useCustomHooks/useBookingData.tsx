@@ -1,6 +1,6 @@
 import React, { useContext, SetStateAction, useEffect, useRef } from "react";
 
-import { hotelContext } from "../../components/home/hotelBooking/HotelContext";
+import { hotelContext } from "../../context/HotelContext";
 import { roomType, roomGuestType } from "../data";
 
 type BookingData = {
@@ -9,7 +9,6 @@ type BookingData = {
   adultMinCount: number;
   childMinCount: number;
   roomCount: number;
-  lastRoomId: number;
   roomGuests: roomGuestType;
   setRoomGuests: React.Dispatch<SetStateAction<roomGuestType>>;
 };
@@ -19,19 +18,21 @@ const useBookingData = (roomIndex: number): BookingData => {
   const childMinCount = 0;
 
   const hotelData = useContext(hotelContext);
-  const { setTotalGuest, setRooms, roomCount, lastRoomId, roomGuests, setRoomGuests } = hotelData;
-  const { adults, children, isIntialRender } = roomGuests[roomIndex];
-  const prevTotal = useRef(adults + children);
+  const { setTotalGuest, setRooms, roomCount, roomGuests, setRoomGuests } = hotelData;
+  const { adults, children: _children, isIntialRender } = roomGuests[roomIndex];
+  const prevTotal = useRef(adults + _children);
 
   useEffect(() => {
-    if (prevTotal.current !== adults + children) {
-      if (prevTotal.current < adults + children) {
+    if (prevTotal.current !== adults + _children) {
+      if (prevTotal.current < adults + _children) {
         setTotalGuest((prevCount) => ++prevCount);
       } else {
         setTotalGuest((prevCount) => --prevCount);
       }
-      prevTotal.current = adults + children;
+      prevTotal.current = adults + _children;
     }
+  }, [adults, _children, setTotalGuest, roomIndex]);
+  useEffect(() => {
     if (isIntialRender) {
       setRoomGuests((prevGuests) => {
         return prevGuests.map((room, index) => {
@@ -42,8 +43,8 @@ const useBookingData = (roomIndex: number): BookingData => {
         });
       });
     }
-  }, [adults, children, isIntialRender, setTotalGuest, setRoomGuests, roomIndex]);
-  return { setRooms, setTotalGuest, adultMinCount, childMinCount, roomCount, lastRoomId, roomGuests, setRoomGuests: hotelData.setRoomGuests };
+  }, [isIntialRender, setRoomGuests, roomIndex]);
+  return { setRooms, setTotalGuest, adultMinCount, childMinCount, roomCount, roomGuests, setRoomGuests: hotelData.setRoomGuests };
 };
 
 export default useBookingData;

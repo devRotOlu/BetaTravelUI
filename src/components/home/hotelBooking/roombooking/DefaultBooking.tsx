@@ -10,7 +10,7 @@ import useBookingData from "../../../../utils/useCustomHooks/useBookingData";
 import { RoomBookingProps } from "../../../../utils/data";
 
 const DefaultBooking = ({ roomIndex }: RoomBookingProps) => {
-  const { setRooms, roomGuests, setRoomGuests, adultMinCount, childMinCount, lastRoomId } = useBookingData(roomIndex);
+  const { setRooms, roomGuests, setRoomGuests, adultMinCount, childMinCount } = useBookingData(roomIndex);
   const { adults, children } = roomGuests[roomIndex];
 
   return (
@@ -21,7 +21,7 @@ const DefaultBooking = ({ roomIndex }: RoomBookingProps) => {
           buttonClass="roomBtn addRoomBtn"
           handleClick={(event: React.MouseEvent) => {
             event.stopPropagation();
-            setRooms((rooms) => [...rooms, { roomId: lastRoomId + 1 }]);
+            setRooms((rooms) => [...rooms, { roomId: rooms[rooms.length - 1].roomId + 1 }]);
             setRoomGuests((prevData) => [...prevData, { adults: 1, children: 0, infants: 0, isIntialRender: true }]);
           }}
           buttonType="button"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { Icon } from "@iconify/react";
 import debounce from "debounce";
 
@@ -12,7 +12,7 @@ import QualityCheckMark from "../QualityCheckMark";
 import SearchPrompt from "../SearchPrompt";
 
 import { betaTravelAxios } from "../../../axios/axios";
-import { hotelContext } from "./HotelContext";
+import { hotelContext } from "../../../context/HotelContext";
 import { Value, months, days } from "../../../utils/data";
 import { appContext } from "../../../context/ContextWrapper";
 import useUseQuery from "../../../utils/useCustomHooks/useUseQuery";
@@ -23,7 +23,7 @@ const HotelBooking = () => {
   const [cities, setCities] = useState<{ country: string; dest_id: string; city_name: string }[]>([]);
   const hotelData = useContext(hotelContext);
   const appData = useContext(appContext);
-  const { currentDate, currentDay, currentMonthDate, currentMonth } = appData;
+  const { currentDate, currentDay, currentMonthDate, currentMonth, tomorrowDate } = appData;
   const { totalGuest, roomCount } = hotelData;
   const [hotelInfos, setHotelInfo] = useState({
     city: "",
@@ -32,7 +32,7 @@ const HotelBooking = () => {
     checkOutDate: "",
   });
   const [prevCity, setPrevCity] = useState(hotelInfos.city);
-  const [date, setDate] = useState<Value>([currentDate, null]);
+  const [date, setDate] = useState<Value>(() => [currentDate, tomorrowDate]);
   const handleOptionClick = (event: React.MouseEvent<HTMLOptionElement>) => {
     dataListInputRef.current.disabled = true;
     setHotelInfo((prevObj) => ({ ...prevObj, city: event.currentTarget.value }));
@@ -85,16 +85,8 @@ const HotelBooking = () => {
     roomGuestCount = `${roomCount} Room, ${totalGuest} Guest`;
   const date1 = date[0];
   const date2 = date[1];
-  if (!date2 && date1) {
-    const day = date1.getDay();
-    const month = date1.getMonth();
-    const date = date1.getDate();
-    checkInDate = `${days[day]}, ${months[month]} ${date}`;
-    checkOutDate = `${days[day]}, ${months[month]} ${date}`;
-  } else if (date1 && date2) {
-    checkInDate = `${days[date1.getDay()]}, ${months[date1.getMonth()]} ${date1.getDate()}`;
-    checkOutDate = `${days[date2.getDay()]}, ${months[date2.getMonth()]} ${date2.getDate()}`;
-  }
+  checkInDate = `${days[date1.getDay()]}, ${months[date1.getMonth()]} ${date1.getDate()}`;
+  checkOutDate = `${days[date2.getDay()]}, ${months[date2.getMonth()]} ${date2.getDate()}`;
 
   if (prevCity !== hotelInfos.city) {
     if (hotelInfos.city.length >= 3) refetch();
@@ -152,7 +144,7 @@ const HotelBooking = () => {
           <InputWrapper styleClass="hotelCheckOut" label="Check-out" icon="ph:calendar-thin">
             <InputDropDown name={"checkOutDate"} inputId="Check-out" value={checkOutDate} handleChange={(e) => setHotelInfo((prev) => ({ ...prev, checkOutDate: e.target.value }))} placeHolder="Wed, Dec 27" handleFocus={() => handleFocus("calendarIsFocused")} />
           </InputWrapper>
-          {calendarIsFocused && <BookingCalendar showDoubleView={true} setDate={setDate} />}
+          {calendarIsFocused && <BookingCalendar showDoubleView={true} setDate={setDate} value={date} selectRange={true} />}
         </li>
       </ul>
       <Button buttonLabel="Search Hotels" buttonType="submit">

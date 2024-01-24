@@ -23,7 +23,6 @@ const PossibleLocations = ({ searchTerm, children, previousLocations, previousSe
       display_name: string;
     }[]
   >([]);
-  useEffect(() => console.log("being rendered"), []);
   const { refetch } = useUseQuery(
     "airport-locations",
     "https://travel-advisor.p.rapidapi.com/airports/search",

@@ -6,7 +6,7 @@ import Tab from "../Tab";
 import List from "../List";
 import Button from "../../Button";
 import QualityCheckMark from "../QualityCheckMark";
-import FlightContext from "./FlightContext";
+import FlightContext from "../../../context/FlightContext";
 
 import { flightTabLinks } from "../../../utils/data";
 import { useRouteEventListener } from "../../../utils/useCustomHooks/useRouteEventListener";

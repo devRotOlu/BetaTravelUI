@@ -6,33 +6,22 @@ import PossibleLocations from "./PossibleLocations";
 import SearchPrompt from "../SearchPrompt";
 import InputDropDown from "../../formElements/InputDropDown";
 import BookingCalendar from "../BookingCalendar";
+import InputBar from "./InputBar";
 
-import { flightContext } from "./FlightContext";
+import { flightContext } from "../../../context/FlightContext";
 import { appContext } from "../../../context/ContextWrapper";
 import useAllisBlurred from "../../../utils/useCustomHooks/useAllisBlurred";
-import { Value, BasicFlightFormElementsProps } from "../../../utils/data";
+import { Value, BasicFlightFormElementsProps, days, months } from "../../../utils/data";
 
-const BasicFlightFormElements = ({ index }: BasicFlightFormElementsProps) => {
+const BasicFlightFormElements = ({ focusedElements: { destination, departure, calendar }, flightIndex }: BasicFlightFormElementsProps) => {
   const flightData = useContext(flightContext);
-  const {
-    flightDetails,
-    setFlightDetails,
-    setIsFocused,
-    isFocused: { destDataList, departDataList, departDate },
-    blurAll,
-  } = flightData;
+  const { flightDetails, setFlightDetails, setIsFocused, isFocused, blurAll } = flightData;
   const appData = useContext(appContext);
   const { currentDate, currentDay, currentMonth, currentMonthDate } = appData;
-  const [_departDate, setDepartDate] = useState<Value>([currentDate, null]);
+  const [_departDate, setDepartDate] = useState<Value>([currentDate, currentDate]);
+  const _date = `${days[_departDate[0].getDay()]}, ${months[_departDate[0].getMonth()]} ${_departDate[0].getDate()}`;
   const handleFocused = (focusedInput: string) => {
-    setIsFocused({
-      destDataList: "destDataList" === focusedInput,
-      departDataList: "departDataList" === focusedInput,
-      departDate: "departDate" === focusedInput,
-      returnDate: false,
-      seatBooking: false,
-      flightClass: false,
-    });
+    setIsFocused(focusedInput);
   };
   useAllisBlurred(blurAll);
   return (
@@ -40,20 +29,20 @@ const BasicFlightFormElements = ({ index }: BasicFlightFormElementsProps) => {
       <li className="w-100">
         <InputWrapper label="From" icon="material-symbols-light:flight">
           <>
-            {departDataList && <span className="dataListTag" style={{ height: "10px", borderTopLeftRadius: "5px", borderTopRightRadius: "5px", position: "absolute", bottom: "0", width: "50px", zIndex: "100000", backgroundColor: "darkblue", left: "50%", transform: "translateX(-50%)" }} />}
+            {isFocused === departure && <InputBar />}
             <DataList
               key={1}
               name="departure"
               inputId="departure"
-              value={flightDetails[index].depart}
+              value={flightDetails[flightIndex].depart}
               handleChange={(e) => setFlightDetails((prev) => ({ ...prev, depart: e.target.value }))}
               placeHolder="Enter City"
-              handleFocus={() => handleFocused("departDataList")}
+              handleFocus={() => handleFocused(departure)}
               dropDownClass="flightData"
-              isFocused={departDataList}
+              isFocused={isFocused === departure}
             >
-              <PossibleLocations previousSearches={[]} previousLocations={[]} searchTerm={flightDetails[index].depart}>
-                <SearchPrompt searchTerm={flightDetails[index].depart} />
+              <PossibleLocations previousSearches={[]} previousLocations={[]} searchTerm={flightDetails[flightIndex].depart}>
+                <SearchPrompt searchTerm={flightDetails[flightIndex].depart} />
               </PossibleLocations>
             </DataList>
           </>
@@ -65,15 +54,15 @@ const BasicFlightFormElements = ({ index }: BasicFlightFormElementsProps) => {
             key={4}
             name="destination"
             inputId="destination"
-            value={flightDetails[index].dest}
+            value={flightDetails[flightIndex].dest}
             handleChange={(e) => setFlightDetails((prev) => ({ ...prev, dest: e.target.value }))}
             placeHolder="Enter City"
-            handleFocus={() => handleFocused("destDataList")}
+            handleFocus={() => handleFocused(destination)}
             dropDownClass="flightData"
-            isFocused={destDataList}
+            isFocused={isFocused === destination}
           >
-            <PossibleLocations previousSearches={[]} previousLocations={[]} searchTerm={flightDetails[index].dest}>
-              <SearchPrompt searchTerm={flightDetails[index].dest} />
+            <PossibleLocations previousSearches={[]} previousLocations={[]} searchTerm={flightDetails[flightIndex].dest}>
+              <SearchPrompt searchTerm={flightDetails[flightIndex].dest} />
             </PossibleLocations>
           </DataList>
         </InputWrapper>
@@ -83,13 +72,13 @@ const BasicFlightFormElements = ({ index }: BasicFlightFormElementsProps) => {
           <InputDropDown
             name="departDate"
             inputId="departDate"
-            value={flightDetails[index].departDate}
+            value={_date}
             handleChange={(e) => setFlightDetails((prev) => ({ ...prev, departDate: e.target.value }))}
-            placeHolder={`${currentDay}, ${currentMonth},${currentMonthDate}`}
-            isFocused={departDate}
-            handleFocus={() => handleFocused("departDate")}
+            placeHolder={`${currentDay}, ${currentMonth}, ${currentMonthDate}`}
+            isFocused={isFocused === calendar}
+            handleFocus={() => handleFocused(calendar)}
           >
-            <BookingCalendar showDoubleView={false} setDate={setDepartDate} />
+            <BookingCalendar showDoubleView={false} setDate={setDepartDate} value={_departDate} selectRange={false} />
           </InputDropDown>
         </InputWrapper>
       </li>

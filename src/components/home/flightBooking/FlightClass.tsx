@@ -1,27 +1,30 @@
 import { useContext } from "react";
 import { Icon } from "@iconify/react";
 
-import FormInput from "../../formElements/FormInput";
-import DataList from "../../formElements/DataList";
+import InputDropDown from "../../formElements/InputDropDown";
 
-import { flightContext } from "./FlightContext";
+import { flightContext } from "../../../context/FlightContext";
 
 type FlightClassProps = {
   inputClass?: string;
-  index: number;
+  children: React.ReactNode;
+  focusedInput: string;
+  flightClass: string;
 };
 
-const FlightClass = ({ inputClass, index }: FlightClassProps) => {
+const FlightClass = ({ inputClass, children, focusedInput, flightClass }: FlightClassProps) => {
   const flightData = useContext(flightContext);
-  const { flightDetails, setFlightDetails } = flightData;
+  const { isFocused, setIsFocused } = flightData;
+  const handleFocused = () => setIsFocused(focusedInput);
   return (
-    <FormInput inputName="flightClass" inputType="text" inputValue={flightDetails[index].flightClass} inputClass={inputClass} handleChange={() => {}}>
-      <>
-        <span style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", right: "10px" }}>
-          <Icon icon="bxs:down-arrow" />
-        </span>
-      </>
-    </FormInput>
+    <>
+      <InputDropDown name="flightClass" inputId="flightClass" inputClass={inputClass} value={flightClass} handleChange={(e) => {}} handleFocus={() => handleFocused()} isFocused={isFocused === focusedInput}>
+        {children}
+      </InputDropDown>
+      <span style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", right: "10px" }}>
+        <Icon icon="bxs:down-arrow" />
+      </span>
+    </>
   );
 };
 

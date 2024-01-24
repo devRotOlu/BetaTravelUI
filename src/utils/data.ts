@@ -87,6 +87,20 @@ export type roomGuestType = {
   isIntialRender: boolean;
 }[];
 
+export type flightDetailsType = {
+  depart: string;
+  dest: string;
+  departDate: string;
+  returnDate: string;
+  flightClass: string;
+};
+
+export type FlightClassesProps = {
+  defaultClass: string;
+  setFlightClass: React.Dispatch<React.SetStateAction<flightDetailsType[]>>;
+  flightIndex: number;
+};
+
 export type PaxButtonsProps = {
   count: number;
   setCount: React.Dispatch<React.SetStateAction<roomGuestType>>;
@@ -114,12 +128,14 @@ export type RoomBookingProps = {
   roomIndex: number;
 };
 
-export type ValuePiece = Date | null;
+export type ValuePiece = Date;
 export type Value = [ValuePiece, ValuePiece];
 
 export type BookingCalendarProps = {
   setDate: React.Dispatch<SetStateAction<Value>>;
   showDoubleView: boolean;
+  value: Value;
+  selectRange: boolean;
 };
 
 export const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -145,7 +161,12 @@ type BookingOwnProps<E extends React.ElementType> = {
 export type BookingButtonsProps<E extends React.ElementType> = BookingOwnProps<E> & Omit<React.ComponentProps<E>, keyof BookingOwnProps<E>>;
 
 export type BasicFlightFormElementsProps = {
-  index: number;
+  focusedElements: {
+    destination: string;
+    departure: string;
+    calendar: string;
+  };
+  flightIndex: number;
 };
 
 type WrapperOwnProps<E extends React.ElementType> = {
@@ -153,3 +174,8 @@ type WrapperOwnProps<E extends React.ElementType> = {
   as?: E;
 };
 export type WrapperProps<E extends React.ElementType> = WrapperOwnProps<E> & Omit<React.ComponentProps<E>, keyof WrapperOwnProps<E>>;
+
+export type SeatBookingDropDownProps = {
+  handleFocus: () => void;
+  styles: {};
+};

@@ -7,7 +7,7 @@ import BookingButtons from "../BookingButtons";
 import PaxButtons from "../PaxButtons";
 import Wrapper from "../Wrapper";
 
-import { flightContext } from "./FlightContext";
+import { flightContext } from "../../../context/FlightContext";
 
 const PassengerCount = () => {
   const flightData = useContext(flightContext);

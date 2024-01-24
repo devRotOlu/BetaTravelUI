@@ -6,7 +6,7 @@ const useAllisBlurred = (eventFunc: () => void) => {
     return () => {
       window.removeEventListener("click", eventFunc);
     };
-  }, []);
+  }, [eventFunc]);
   return;
 };
 

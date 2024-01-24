@@ -1,11 +1,11 @@
+import { useContext } from "react";
 import { Icon } from "@iconify/react";
 import Calendar from "react-calendar";
 
 import { BookingCalendarProps } from "../../utils/data";
 import { appContext } from "../../context/ContextWrapper";
-import { useContext } from "react";
 
-const BookingCalendar = ({ setDate, showDoubleView }: BookingCalendarProps) => {
+const BookingCalendar = ({ setDate, showDoubleView, value, selectRange }: BookingCalendarProps) => {
   const handleClick = (event: React.MouseEvent) => event.stopPropagation();
   const appData = useContext(appContext);
   const { currentDate } = appData;
@@ -16,7 +16,7 @@ const BookingCalendar = ({ setDate, showDoubleView }: BookingCalendarProps) => {
         showDoubleView={showDoubleView}
         goToRangeStartOnSelect={false}
         allowPartialRange={true}
-        selectRange={true}
+        selectRange={selectRange}
         minDate={currentDate}
         prevLabel={<Icon icon="wpf:previous" />}
         nextLabel={<Icon icon="wpf:next" />}
@@ -26,10 +26,16 @@ const BookingCalendar = ({ setDate, showDoubleView }: BookingCalendarProps) => {
         calendarType="gregory"
         onChange={(value) => {
           if (Array.isArray(value)) {
-            setDate(value);
+            if (value[1] === null && value[0] !== null) {
+              setDate([value[0], value[0]]);
+            }
+            if (value[1] !== null && value[0] !== null) {
+              setDate([value[0], value[1]]);
+            }
           }
         }}
         returnValue="range"
+        value={value}
       />
     </div>
   );

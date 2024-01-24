@@ -1,4 +1,4 @@
-import HotelContext from "./HotelContext";
+import HotelContext from "../../../context/HotelContext";
 import HotelBooking from "./HotelBooking";
 
 const HotelBookingWrapper = () => {

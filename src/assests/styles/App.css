@@ -168,14 +168,23 @@ a:active {
   outline: darkblue;
   border-color: darkblue;
 }
-
-.appInputs.passengerCount {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+.dataListInput.passengerCount {
+  padding: 0 15px;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
 }
-.appInputs.flightClass > input {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+.dataListInput.passengerCount.multipassengerCount {
+  border-radius: 2px;
+}
+.dataListInput.flightClass {
+  padding: 0 15px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.dataListInput.multiFlightClass {
+  padding: 0 15px;
+  border-radius: 2px;
 }
 
 .appInputs.bookingInput > input {
@@ -244,11 +253,6 @@ a:active {
   border-bottom-right-radius: 2px;
 }
 
-#passengerCount {
-  border-radius: 2px;
-  padding: 0 15px;
-}
-
 .roomBooking {
   padding: 15px;
   position: absolute;
@@ -261,6 +265,25 @@ a:active {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.flightClasses {
+  background-color: white;
+  width: 200px;
+  padding: 20px;
+  position: absolute;
+  margin-top: 10px;
+  right: 0;
+  top: 100%;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-radius: 5px;
+}
+
+.defaultClass {
+  color: darkblue;
 }
 
 .calendar {
@@ -365,4 +388,20 @@ a:active {
 
 .react-calendar--doubleView .react-calendar__viewContainer > * {
   width: 100%;
+}
+
+.appBtn.deleteFlightBooking {
+  background-color: unset;
+  margin-top: 0px;
+  height: fit-content;
+}
+
+.appBtn.addFlight {
+  background-color: unset;
+  color: white;
+  border: solid white thin;
+}
+
+.appBtn.addFlight:hover {
+  background-color: blue;
 }

@@ -5,7 +5,7 @@ import DefaultBooking from "./DefaultBooking";
 import BookingButtons from "../../BookingButtons";
 import Wrapper from "../../Wrapper";
 
-import { hotelContext } from "../HotelContext";
+import { hotelContext } from "../../../../context/HotelContext";
 
 const RoomBooking = () => {
   const hotelData = useContext(hotelContext);
