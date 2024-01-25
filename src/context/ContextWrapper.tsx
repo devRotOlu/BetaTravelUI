@@ -1,4 +1,7 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, SetStateAction } from "react";
+
+import Notification from "../components/home/flightBooking/Notification";
+
 import { useLocation } from "react-router-dom";
 
 import { flightTabLinks, months, days } from "../utils/data";
@@ -11,6 +14,8 @@ type AppContextType = {
   currentMonth: string;
   currentDay: string;
   currentMonthDate: number;
+  setNotificationContent: React.Dispatch<SetStateAction<string>>;
+  setNotIsMounted: React.Dispatch<SetStateAction<boolean>>;
 };
 
 type ContextProps = {
@@ -20,6 +25,8 @@ type ContextProps = {
 export const appContext = React.createContext({} as AppContextType);
 
 const ContextWrapper = ({ children }: ContextProps) => {
+  const [notificationContent, setNotificationContent] = useState("");
+  const [notIsMounted, setNotIsMounted] = useState(false);
   const location = useLocation();
   const currentDate = useMemo(() => new Date(), []);
   const currentMonth = months[currentDate.getMonth()];
@@ -47,7 +54,14 @@ const ContextWrapper = ({ children }: ContextProps) => {
     }
   }, [pathname]);
 
-  return <appContext.Provider value={{ flightLink, currentDate, currentDay, currentMonth, currentMonthDate, tomorrowDate }}>{children}</appContext.Provider>;
+  return (
+    <appContext.Provider value={{ flightLink, currentDate, currentDay, currentMonth, currentMonthDate, tomorrowDate, setNotIsMounted, setNotificationContent }}>
+      <div style={{ position: "relative" }}>
+        {children}
+        {notIsMounted && <Notification content={notificationContent} mount={setNotIsMounted} />}
+      </div>
+    </appContext.Provider>
+  );
 };
 
 export default ContextWrapper;

@@ -8,14 +8,27 @@ import Button from "../../Button";
 import SeatBookingDropDown from "./SeatBookingDropDown";
 
 import { flightContext } from "../../../context/FlightContext";
+import { appContext } from "../../../context/ContextWrapper";
 
 const MultiCityBooking = () => {
   const flightData = useContext(flightContext);
   const { flightDetails, setFlightDetails, _flightDetails, setIsFocused } = flightData;
+  const appData = useContext(appContext);
+  const { setNotIsMounted, setNotificationContent } = appData;
   const [travelCount, setTravelcount] = useState(() => [{ travelId: 1 }, { travelId: 2 }]);
+  const isMaxFormCount = flightDetails.length === 6;
   const handleAddFlight = () => {
-    setTravelcount((prevItems) => [...prevItems, { travelId: prevItems[prevItems.length - 1].travelId + 1 }]);
-    setFlightDetails((prevItems) => [...prevItems, { ..._flightDetails, flightClass: "Economy" }]);
+    const isPrevFormsFilled = flightDetails.every(({ depart, dest }, index) => {
+      if (!index) return true;
+      return depart !== "" && dest !== "";
+    });
+    if (isPrevFormsFilled) {
+      setTravelcount((prevItems) => [...prevItems, { travelId: prevItems[prevItems.length - 1].travelId + 1 }]);
+      setFlightDetails((prevItems) => [...prevItems, { ..._flightDetails, flightClass: "Economy" }]);
+    } else {
+      setNotificationContent("Fill in the details first");
+      setNotIsMounted(true);
+    }
   };
   const handleRemoveFlight = (index: number) => {
     setTravelcount((prevItems) => {
@@ -52,7 +65,7 @@ const MultiCityBooking = () => {
     <div className="d-flex gap-4 flex-column">
       {travelBookings}
       <div className="d-flex gap-3 flex-column">
-        <Button buttonLabel="Add Flight" buttonClass="addFlight" buttonType="button" handleClick={() => handleAddFlight()} />
+        {!isMaxFormCount && <Button buttonLabel="Add Flight" buttonClass="addFlight" buttonType="button" handleClick={() => handleAddFlight()} />}
         <div style={{ position: "relative", height: "65px" }}>
           <SeatBooking inputClass="passengerCount multipassengerCount">
             <SeatBookingDropDown handleFocus={handleBookingFocus} styles={{ position: "absolute", top: "50%", transform: "translateY(-50%)", right: "10px", display: "block", cursor: "pointer" }} />
