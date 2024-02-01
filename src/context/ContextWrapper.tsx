@@ -15,7 +15,7 @@ type AppContextType = {
   currentDay: string;
   currentMonthDate: number;
   setNotificationContent: React.Dispatch<SetStateAction<string>>;
-  setNotIsMounted: React.Dispatch<SetStateAction<boolean>>;
+  setNtnIsMounted: React.Dispatch<SetStateAction<boolean>>;
 };
 
 type ContextProps = {
@@ -26,7 +26,7 @@ export const appContext = React.createContext({} as AppContextType);
 
 const ContextWrapper = ({ children }: ContextProps) => {
   const [notificationContent, setNotificationContent] = useState("");
-  const [notIsMounted, setNotIsMounted] = useState(false);
+  const [ntnIsMounted, setNtnIsMounted] = useState(false);
   const location = useLocation();
   const currentDate = useMemo(() => new Date(), []);
   const currentMonth = months[currentDate.getMonth()];
@@ -35,10 +35,10 @@ const ContextWrapper = ({ children }: ContextProps) => {
   const tomorrowDate = useMemo(() => {
     const currentYear = currentDate.getFullYear();
     const dayIncreament = new Date(`${currentYear}-${currentMonth}-${currentMonthDate + 1}`);
-    const monthIncreament = new Date(`${currentYear}-${currentDate.getMonth() + 1}-${currentMonthDate}`);
-    const yearIncreament = new Date(`${currentYear + 1}-${currentMonth}-${currentMonthDate}`);
-    if (dayIncreament) return dayIncreament;
-    if (monthIncreament) return monthIncreament;
+    const monthIncreament = new Date(`${currentYear}-${months[currentDate.getMonth() + 1]}-1`);
+    const yearIncreament = new Date(`${currentYear + 1}-1-1`);
+    if (isNaN(dayIncreament.getTime()) === false) return dayIncreament;
+    if (isNaN(monthIncreament.getTime()) === false) return monthIncreament;
     return yearIncreament;
   }, [currentMonth, currentDate, currentMonthDate]);
 
@@ -48,17 +48,15 @@ const ContextWrapper = ({ children }: ContextProps) => {
 
   useEffect(() => {
     const routeIndex = getRouteLocationIndex(pathname, flightTabLinks, 3);
-    console.log(pathname, "pathname");
     if (routeIndex >= 0 && pathname.includes("flight")) {
       setFlightLink(flightTabLinks[routeIndex].link);
     }
   }, [pathname]);
-
   return (
-    <appContext.Provider value={{ flightLink, currentDate, currentDay, currentMonth, currentMonthDate, tomorrowDate, setNotIsMounted, setNotificationContent }}>
+    <appContext.Provider value={{ flightLink, currentDate, currentDay, currentMonth, currentMonthDate, tomorrowDate, setNtnIsMounted, setNotificationContent }}>
       <div style={{ position: "relative" }}>
         {children}
-        {notIsMounted && <Notification content={notificationContent} mount={setNotIsMounted} />}
+        {ntnIsMounted && <Notification content={notificationContent} mount={setNtnIsMounted} />}
       </div>
     </appContext.Provider>
   );

@@ -109,20 +109,16 @@ a:active {
 }
 .notificationWrapper {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
   z-index: 1000000;
   height: 100%;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
 }
 .notification {
   padding: 20px;
-  min-width: 350px;
+  width: 320px;
   min-height: 100px;
   box-sizing: border-box;
   border-radius: 10px;
@@ -131,6 +127,7 @@ a:active {
   flex-direction: column;
   gap: 10px;
   background-color: white;
+  margin: 0 auto;
 }
 
 .appBtn.notificationBtn {
@@ -245,7 +242,8 @@ a:active {
   outline: white;
 }
 
-.appDataList {
+.appDataList,
+.flightData {
   padding: 0;
   padding-top: 5px;
   background-color: orange;
@@ -276,8 +274,49 @@ a:active {
   font-weight: bold;
 }
 
-.appDataList.flightData > option {
-  height: unset;
+.flightData > li {
+  padding: 20px;
+  padding-top: 20px;
+  padding-bottom: 0;
+  font-size: 14px;
+  font-weight: bold;
+  background-color: white;
+}
+
+.flightData > li:last-child {
+  padding-bottom: 20px;
+}
+
+.flightData > .previousLocations {
+  padding-top: 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.flightData > .previousLocations.lastLocation {
+  padding-bottom: 10px;
+}
+
+.flightData > .previousLocations > p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(253, 253, 253);
+  height: 30px;
+  border: solid thin rgb(211, 209, 209);
+}
+
+.flightData > .label {
+  font-size: 14px;
+  text-align: left;
+  padding: 0;
+}
+
+.flightData > .label > p {
+  padding-left: 20px;
+  padding-top: 10px;
+  background-color: rgb(253, 253, 253);
+  height: 30px;
 }
 
 .baseList {
@@ -328,11 +367,6 @@ a:active {
   display: block;
   width: 100%;
 }
-
-/* .calendar > li {
-  width: 100%;
-  background-color: brown;
-} */
 
 .react-calendar {
   width: 350px;
@@ -427,6 +461,18 @@ a:active {
   background-color: unset;
   margin-top: 0px;
   height: fit-content;
+}
+
+.appBtn.datalistTrigger {
+  position: absolute;
+  z-index: 1000;
+  width: 20px;
+  height: 20px;
+  left: 100%;
+  top: 50%;
+  transform: translate(-170%, -50%);
+  border-radius: 50%;
+  margin-top: 0;
 }
 
 .appBtn.addFlight {

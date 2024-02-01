@@ -141,18 +141,29 @@ export type BookingCalendarProps = {
 export const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-export type SearchPromptProps = {
-  searchTerm: string;
-};
+export type prevLocationtype = { cityName: string; displayName: string };
 
 export type PossibleLocationsProps = {
-  searchTerm: string;
-  previousLocations: string[];
-  previousSearches: string[];
+  airPorts: airPortType[];
+  previousLocations: prevLocationtype[];
+  previousSearches: prevLocationtype[];
   children: ReactNode;
+  searchTerm: string;
+  handleClick: (display_name: string, cityName: string) => void;
+  setLocation: React.Dispatch<SetStateAction<string>>;
 };
 
 export type roomType = { roomId: number }[];
+
+type SearchPromptOwnProps<E extends React.ElementType> = {
+  searchTerm: string;
+  as?: E;
+  isTyping: boolean;
+  isLoading: boolean;
+  isError: boolean;
+};
+
+export type SearchPromptProps<E extends React.ElementType> = SearchPromptOwnProps<E> & Omit<React.ComponentProps<E>, keyof SearchPromptOwnProps<E>>;
 
 type BookingOwnProps<E extends React.ElementType> = {
   as?: E;
@@ -178,4 +189,11 @@ export type WrapperProps<E extends React.ElementType> = WrapperOwnProps<E> & Omi
 export type SeatBookingDropDownProps = {
   handleFocus: () => void;
   styles: {};
+};
+
+export type airPortType = {
+  name: string;
+  code: string;
+  display_name: string;
+  city_name: string;
 };

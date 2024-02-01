@@ -6,6 +6,7 @@ import FlightClass from "./FlightClass";
 import FlightClasses from "./FlightClasses";
 import Button from "../../Button";
 import SeatBookingDropDown from "./SeatBookingDropDown";
+import BookingsWrapper from "../BookingsWrapper";
 
 import { flightContext } from "../../../context/FlightContext";
 import { appContext } from "../../../context/ContextWrapper";
@@ -14,7 +15,7 @@ const MultiCityBooking = () => {
   const flightData = useContext(flightContext);
   const { flightDetails, setFlightDetails, _flightDetails, setIsFocused } = flightData;
   const appData = useContext(appContext);
-  const { setNotIsMounted, setNotificationContent } = appData;
+  const { setNtnIsMounted, setNotificationContent } = appData;
   const [travelCount, setTravelcount] = useState(() => [{ travelId: 1 }, { travelId: 2 }]);
   const isMaxFormCount = flightDetails.length === 6;
   const handleAddFlight = () => {
@@ -27,7 +28,7 @@ const MultiCityBooking = () => {
       setFlightDetails((prevItems) => [...prevItems, { ..._flightDetails, flightClass: "Economy" }]);
     } else {
       setNotificationContent("Fill in the details first");
-      setNotIsMounted(true);
+      setNtnIsMounted(true);
     }
   };
   const handleRemoveFlight = (index: number) => {
@@ -42,14 +43,14 @@ const MultiCityBooking = () => {
   const handleBookingFocus = () => setIsFocused("seatBooking");
 
   const getFlight = (index: number) => (
-    <ul className="p-0 w-100 d-flex flex-column gap-3">
+    <BookingsWrapper>
       <BasicFlightFormElements focusedElements={{ destination: `destination-${index}`, departure: `departure-${index}`, calendar: `calendar ${index}` }} flightIndex={index + 1} />
       <li style={{ height: "65px", position: "relative" }}>
         <FlightClass flightClass={flightDetails[index + 1].flightClass} inputClass="multiFlightClass" focusedInput={`flight-${index}`}>
           <FlightClasses defaultClass={flightDetails[index + 1].flightClass} setFlightClass={setFlightDetails} flightIndex={index + 1} />
         </FlightClass>
       </li>
-    </ul>
+    </BookingsWrapper>
   );
   const travelBookings = travelCount.map((_, index) => {
     const _key = travelCount[index].travelId;

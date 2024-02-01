@@ -1,81 +1,70 @@
-import { ReactNode, useState, useEffect } from "react";
+import { ReactNode } from "react";
 
-import { PossibleLocationsProps } from "../../../utils/data";
+import { PossibleLocationsProps, prevLocationtype } from "../../../utils/data";
 
-import useUseQuery from "../../../utils/useCustomHooks/useUseQuery";
-
-const addCities = (newCities: string[], cities: ReactNode[], startKey: number): number => {
+const addCities = (newCities: prevLocationtype[], cities: ReactNode[], startKey: number, handleClick: (displayName: string) => void, className?: string): number => {
   var _key = startKey;
   var index = 0;
   while (newCities.length && index < newCities.length) {
-    cities.push(<option key={_key}>{newCities[index]}</option>);
+    const displayName = newCities[index].displayName;
+    if (index === newCities.length - 1 && className) {
+      cities.push(
+        <li onClick={() => handleClick(displayName)} className={`previousLocations ${className}`} key={_key}>
+          <p>{newCities[index].cityName}</p>
+        </li>
+      );
+    } else {
+      cities.push(
+        <li onClick={() => handleClick(displayName)} className="previousLocations" key={_key}>
+          <p>{newCities[index].cityName}</p>
+        </li>
+      );
+    }
     index++;
     _key++;
   }
   return _key;
 };
 
-const PossibleLocations = ({ searchTerm, children, previousLocations, previousSearches }: PossibleLocationsProps) => {
-  const [airports, setAirPorts] = useState<
-    {
-      name: string;
-      code: string;
-      display_name: string;
-    }[]
-  >([]);
-  const { refetch } = useUseQuery(
-    "airport-locations",
-    "https://travel-advisor.p.rapidapi.com/airports/search",
-    false,
-    {
-      query: searchTerm,
-      locale: "en-us",
-    },
-    {
-      "X-RapidAPI-Key": "2565c29410msh5d5d2f756f9eed5p130a89jsn0a7a959312b9",
-      "X-RapidAPI-Host": "travel-advisor.p.rapidapi.com",
-    },
-    (data) => setAirPorts(data.data),
-    () => setAirPorts([])
-  );
-
-  useEffect(() => {
-    if (searchTerm.length >= 3) refetch();
-    else setAirPorts([]);
-  }, [searchTerm, refetch]);
-
+const PossibleLocations = ({ airPorts, children, previousLocations, previousSearches, searchTerm, handleClick, setLocation }: PossibleLocationsProps) => {
+  const handleListClick = (location: string) => setLocation(location);
   var cities = [];
-  if (!airports.length) {
+  if (!airPorts.length) {
     if (!searchTerm) {
-      cities.push(<option key={0}>RECENT PLACES</option>);
-      let _key = addCities(previousLocations, cities, 1);
       cities.push(
-        <option className="baseList" key={_key++}>
-          CITIES
-        </option>
+        <li className="label" key={0}>
+          <p>RECENT PLACES</p>
+        </li>
       );
-      addCities(previousSearches, cities, _key);
-      return <>{cities}</>;
+      let _key = addCities(previousLocations, cities, 1, handleListClick, "lastLocation");
+      cities.push(
+        <li className="label" key={_key++}>
+          <p>CITIES</p>
+        </li>
+      );
+      addCities(previousSearches, cities, _key, handleListClick);
+      return <ul className="flightData">{cities}</ul>;
     } else {
-      return <>{children}</>;
+      return <ul className="flightData">{children}</ul>;
     }
   }
-  cities = airports.map(({ name, code, display_name }) => {
+
+  cities = airPorts.map(({ name, code, display_name, city_name }) => {
     return (
-      <option className="d-flex gap-1 align-items-center justify-content-between" key={code}>
-        <p className="d-flex flex-column flex-grow-1" style={{ textWrap: "wrap" }}>
-          <span>{display_name}</span>
-          <span>
+      <li onClick={() => handleClick(display_name, city_name)} className="d-flex gap-3 align-items-center" key={code}>
+        <span className="d-flex flex-column flex-grow-1" style={{ width: "100px", justifyContent: "flex-start", lineHeight: "22px" }}>
+          <span style={{ whiteSpace: "pre-wrap" }}>{display_name}</span>
+          <span style={{ fontWeight: "lighter", whiteSpace: "pre-wrap" }}>
             {name} ({code})
           </span>
-        </p>
-        <span className="d-flex justify-content-center align-items-center" style={{ width: "fit-content", padding: "2px 5px", borderRadius: "5px", border: "solid black 1px", height: "fit-content" }}>
+        </span>
+        <span className="d-flex justify-content-center align-items-center" style={{ borderRadius: "5px", border: "solid black 1px", height: "50px", width: "50px" }}>
           {code.toLocaleUpperCase()}
         </span>
-      </option>
+      </li>
     );
   });
-  return <>{cities}</>;
+  return <ul className="flightData">{cities}</ul>;
 };
 
 export default PossibleLocations;

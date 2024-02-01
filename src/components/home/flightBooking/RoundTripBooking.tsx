@@ -8,10 +8,13 @@ import InputWrapper from "../../formElements/formDataList/InputWrapper";
 import InputDropDown from "../../formElements/InputDropDown";
 import BookingCalendar from "../BookingCalendar";
 import SeatBookingDropDown from "./SeatBookingDropDown";
+import BookingsWrapper from "../BookingsWrapper";
 
 import { flightContext } from "../../../context/FlightContext";
 import { appContext } from "../../../context/ContextWrapper";
 import { Value, days, months } from "../../../utils/data";
+
+const focusedElement = { departure: "departure", destination: "destination", calendar: "departCalendar" };
 
 const RoundTripBooking = () => {
   const flightData = useContext(flightContext);
@@ -25,8 +28,8 @@ const RoundTripBooking = () => {
   };
   const handleBookingFocus = () => setIsFocused("seatBooking");
   return (
-    <ul className="p-0 w-100 d-flex flex-column gap-3">
-      <BasicFlightFormElements focusedElements={{ departure: "departure", destination: "destination", calendar: "departCalendar" }} flightIndex={0} />
+    <BookingsWrapper>
+      <BasicFlightFormElements focusedElements={focusedElement} flightIndex={0} />
       <li className="w-100">
         <InputWrapper label="Return" icon="ph:calendar-thin">
           <InputDropDown
@@ -50,7 +53,7 @@ const RoundTripBooking = () => {
           <FlightClasses defaultClass={flightDetails[0].flightClass} setFlightClass={setFlightDetails} flightIndex={0} />
         </FlightClass>
       </li>
-    </ul>
+    </BookingsWrapper>
   );
 };
 
