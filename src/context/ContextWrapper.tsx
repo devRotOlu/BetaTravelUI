@@ -4,7 +4,7 @@ import Notification from "../components/home/flightBooking/Notification";
 
 import { useLocation } from "react-router-dom";
 
-import { flightTabLinks, months, days } from "../utils/data";
+import { flightTabLinks, months, days, signupDetailsType, signinDetailsType } from "../utils/data";
 import { getRouteLocationIndex } from "../utils/helperFunctions/helperFunction";
 
 type AppContextType = {
@@ -16,6 +16,10 @@ type AppContextType = {
   currentMonthDate: number;
   setNotificationContent: React.Dispatch<SetStateAction<string>>;
   setNtnIsMounted: React.Dispatch<SetStateAction<boolean>>;
+  signupDetails: signupDetailsType;
+  setSignupDetails: React.Dispatch<SetStateAction<signupDetailsType>>;
+  signinDetails: signinDetailsType;
+  setSigninDetails: React.Dispatch<SetStateAction<signinDetailsType>>;
 };
 
 type ContextProps = {
@@ -27,6 +31,17 @@ export const appContext = React.createContext({} as AppContextType);
 const ContextWrapper = ({ children }: ContextProps) => {
   const [notificationContent, setNotificationContent] = useState("");
   const [ntnIsMounted, setNtnIsMounted] = useState(false);
+  const [signupDetails, setSignupDetails] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+  const [signinDetails, setSigninDetails] = useState({
+    email: "",
+    password: "",
+  });
+
   const location = useLocation();
   const currentDate = useMemo(() => new Date(), []);
   const currentMonth = months[currentDate.getMonth()];
@@ -53,7 +68,7 @@ const ContextWrapper = ({ children }: ContextProps) => {
     }
   }, [pathname]);
   return (
-    <appContext.Provider value={{ flightLink, currentDate, currentDay, currentMonth, currentMonthDate, tomorrowDate, setNtnIsMounted, setNotificationContent }}>
+    <appContext.Provider value={{ flightLink, currentDate, currentDay, currentMonth, currentMonthDate, tomorrowDate, setNtnIsMounted, setNotificationContent, signupDetails, setSignupDetails, signinDetails, setSigninDetails }}>
       <div style={{ position: "relative" }}>
         {children}
         {ntnIsMounted && <Notification content={notificationContent} mount={setNtnIsMounted} />}

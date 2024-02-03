@@ -33,8 +33,6 @@ const BasicFlightFormElements = ({ focusedElements: { destination, departure, ca
   const [selectedDepart, setSelectedDepart] = useState("");
   const [selectedDest, setSelectedDest] = useState("");
   const [prevSearches, setPrevSearches] = useState<prevLocationtype[]>([]);
-  const [destIsTyping, setDestIsTyping] = useState(false);
-  const [departIsTyping, setDepartIsTyping] = useState(false);
 
   const { currentDate, currentDay, currentMonth, currentMonthDate } = appData;
   const [_departDate, setDepartDate] = useState<Value>([currentDate, currentDate]);
@@ -70,8 +68,8 @@ const BasicFlightFormElements = ({ focusedElements: { destination, departure, ca
 
   const {
     refetch: refetchDest,
-    isLoading: destIsLoading,
-    isError: destIsError,
+    isFetching: destIsFetching,
+    isFetched: destIsFetched,
   } = useUseQuery(
     "destination-airports",
     route,
@@ -91,8 +89,8 @@ const BasicFlightFormElements = ({ focusedElements: { destination, departure, ca
 
   const {
     refetch: refetchDepart,
-    isLoading: departIsLoading,
-    isError: departIsError,
+    isFetching: departIsFetching,
+    isFetched: departIsFetched,
   } = useUseQuery(
     "departure-airports",
     route,
@@ -110,7 +108,10 @@ const BasicFlightFormElements = ({ focusedElements: { destination, departure, ca
         }
         return [];
       }),
-    () => setDepartAirPorts([])
+    () => {
+      console.log("error o");
+      setDepartAirPorts([]);
+    }
   );
   const handleDepartSelectn = (display_name: string, cityName: string) => {
     const displayName = display_name.split("(")[0].trimEnd();
@@ -132,7 +133,10 @@ const BasicFlightFormElements = ({ focusedElements: { destination, departure, ca
 
   useEffect(() => {
     if (debouncedDepart.length >= 3) {
-      refetchDepart();
+      console.log("fetching");
+      refetchDepart({
+        throwOnError: true,
+      });
     }
   }, [debouncedDepart, refetchDepart]);
   useEffect(() => {
@@ -149,8 +153,10 @@ const BasicFlightFormElements = ({ focusedElements: { destination, departure, ca
     }
   }, [debouncedDest, destAirports.length]);
 
-  if (isFocused === destination && !destIsTyping) setDestIsTyping(true);
-  if (isFocused === departure && !departIsTyping) setDepartIsTyping(true);
+  const departIsLoading = departIsFetching;
+  const departIsError = departIsFetched && !departAirports.length;
+  const destIsLoading = destIsFetching;
+  const destIsError = destIsFetched && !destAirports.length;
 
   return (
     <>
@@ -175,7 +181,7 @@ const BasicFlightFormElements = ({ focusedElements: { destination, departure, ca
               isFocused={isFocused === departure}
             >
               <PossibleLocations previousSearches={prevSearches} previousLocations={locations || []} searchTerm={depart} airPorts={departAirports} handleClick={handleDepartSelectn} setLocation={setSelectedDepart}>
-                <SearchPrompt as="li" searchTerm={depart} isError={departIsError} isLoading={departIsLoading} isTyping={departIsTyping} />
+                <SearchPrompt as="li" searchTerm={depart} isError={departIsError} isLoading={departIsLoading} />
               </PossibleLocations>
             </InputDropDown>
             {selectedDepart && (
@@ -218,7 +224,7 @@ const BasicFlightFormElements = ({ focusedElements: { destination, departure, ca
             isFocused={isFocused === destination}
           >
             <PossibleLocations previousSearches={prevSearches} previousLocations={locations || []} searchTerm={dest} airPorts={destAirports} handleClick={handleDestSelectn} setLocation={setSelectedDest}>
-              <SearchPrompt as="li" searchTerm={dest} isError={destIsError} isTyping={destIsTyping} isLoading={destIsLoading} />
+              <SearchPrompt as="li" searchTerm={dest} isError={destIsError} isLoading={destIsLoading} />
             </PossibleLocations>
           </InputDropDown>
           {selectedDest && (

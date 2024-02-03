@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 
 import Home from "./home/Home";
-import OffCanvasNavbar from "./OffCanvasNavbar";
 import CarBooking from "./home/CarBooking";
 import FlightBooking from "./home/flightBooking/FlightBooking";
 import HotelBookingWrapper from "./home/hotelBooking/HotelBookingWrapper";
@@ -13,6 +12,8 @@ import OneWayBooking from "./home/flightBooking/OneWayBooking";
 import MultiCityBooking from "./home/flightBooking/MultiCityBooking";
 import RoundTripBooking from "./home/flightBooking/RoundTripBooking";
 import ContextWrapper from "../context/ContextWrapper";
+import SignUp from "./authorization/SignUp";
+import SignIn from "./authorization/SignIn";
 
 import "react-calendar/dist/Calendar.css";
 import "../assests/styles/App.css";
@@ -20,7 +21,6 @@ import "../assests/styles/App.css";
 function App() {
   return (
     <ContextWrapper>
-      <OffCanvasNavbar />
       <Routes>
         <Route path="/" element={<Home />}>
           <Route path="flight" element={<FlightBooking />}>
@@ -32,6 +32,8 @@ function App() {
           <Route path="hotels" element={<HotelBookingWrapper />} />
           <Route path="bookings" element={<ManageBookings />} />
         </Route>
+        <Route path="sign-up" element={<SignUp />} />
+        <Route path="sign-in" element={<SignIn />} />
       </Routes>
     </ContextWrapper>
   );

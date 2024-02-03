@@ -13,11 +13,10 @@ const useUseQuery = (queryId: string, route: string, enabled: boolean, params?: 
       });
     },
     {
-      staleTime: 86400000,
       enabled,
       onSuccess,
       onError,
-      cacheTime: 86400004,
+      cacheTime: 0,
     }
   );
 };

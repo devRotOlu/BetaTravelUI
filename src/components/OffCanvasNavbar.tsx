@@ -42,13 +42,13 @@ const OffCanvasNavbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/">
+                <Link to="sign-in">
                   Login
                   <Icon icon={icon} />
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/">
+                <Link to="/sign-up">
                   Create account
                   <Icon icon={icon} />
                 </Link>

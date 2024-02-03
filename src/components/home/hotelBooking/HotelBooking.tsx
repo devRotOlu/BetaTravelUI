@@ -34,7 +34,6 @@ const HotelBooking = () => {
 
   const { currentDate, currentDay, currentMonthDate, currentMonth, tomorrowDate } = appData;
   const [date, setDate] = useState<Value>(() => [currentDate, tomorrowDate]);
-  const [isTyping, setIsTyping] = useState(false);
 
   const [debouncedCity] = useDebounce(hotelInfos.city, 200);
 
@@ -48,7 +47,7 @@ const HotelBooking = () => {
   };
   const handleFocus = (focusedInput: string) => setIsFocused(focusedInput);
   useAllisBlurred(() => setIsFocused(""));
-  const { refetch, isLoading, isError } = useUseQuery(
+  const { refetch, isFetching, isFetched } = useUseQuery(
     "hotel-locations",
     "https://apidojo-booking-v1.p.rapidapi.com/locations/auto-complete",
     false,
@@ -64,12 +63,10 @@ const HotelBooking = () => {
     () => setCities([])
   );
 
-  if (isFocused === "dataListIsFocused" && !isTyping) setIsTyping(true);
-
   var _cities = [];
   if (!cities.length || hotelInfos.city.length < 3) {
     _cities.push(<option key="0">CITY, COUNTRY</option>);
-    _cities.push(<SearchPrompt isError isLoading isTyping key="2" searchTerm={hotelInfos.city} />);
+    _cities.push(<SearchPrompt isError={isFetched && !cities.length} isLoading={isFetching} key="2" searchTerm={hotelInfos.city} />);
   }
 
   if (!_cities.length) {

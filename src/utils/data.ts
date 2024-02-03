@@ -158,7 +158,6 @@ export type roomType = { roomId: number }[];
 type SearchPromptOwnProps<E extends React.ElementType> = {
   searchTerm: string;
   as?: E;
-  isTyping: boolean;
   isLoading: boolean;
   isError: boolean;
 };
@@ -196,4 +195,27 @@ export type airPortType = {
   code: string;
   display_name: string;
   city_name: string;
+};
+
+export type signupDetailsType = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
+
+export type signinDetailsType = {
+  email: string;
+  password: string;
+};
+
+export type PasswordTriggerProps = {
+  showPassword: boolean;
+  setShowPassword: React.Dispatch<SetStateAction<boolean>>;
+};
+
+export type AuthWrapperProps = {
+  header: string;
+  children: React.ReactNode;
+  buttonLabel: string;
 };
