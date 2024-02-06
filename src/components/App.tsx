@@ -14,6 +14,7 @@ import RoundTripBooking from "./home/flightBooking/RoundTripBooking";
 import ContextWrapper from "../context/ContextWrapper";
 import SignUp from "./authorization/SignUp";
 import SignIn from "./authorization/SignIn";
+import Dashboard from "./dashboard/Dashboard";
 
 import "react-calendar/dist/Calendar.css";
 import "../assests/styles/App.css";
@@ -34,6 +35,7 @@ function App() {
         </Route>
         <Route path="sign-up" element={<SignUp />} />
         <Route path="sign-in" element={<SignIn />} />
+        <Route path="dashboard" element={<Dashboard />} />
       </Routes>
     </ContextWrapper>
   );

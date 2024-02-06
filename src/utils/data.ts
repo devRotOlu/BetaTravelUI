@@ -1,4 +1,4 @@
-import React, { ReactNode, SetStateAction } from "react";
+import React, { FormEvent, ReactNode, SetStateAction } from "react";
 
 export const flightTabLinks = [
   {
@@ -48,13 +48,14 @@ export type ListProps = {
 
 export type FormInputProps = {
   inputClass?: string;
-  inputType: "text" | "number" | "password" | "email";
+  inputType: "text" | "number" | "password" | "email" | "checkbox";
   inputValue: string | number;
   inputName: string;
   children?: React.ReactNode;
   inputLabel?: string;
   placeHolder?: string;
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  checked?: boolean;
 };
 
 export type DropDownProps = {
@@ -218,4 +219,17 @@ export type AuthWrapperProps = {
   header: string;
   children: React.ReactNode;
   buttonLabel: string;
+  handleFormSubmit?: (event: FormEvent<HTMLFormElement>) => void;
+};
+
+export type AuthFooterProps = {
+  label: string;
+  linkText: string;
+  link: string;
+};
+
+export type OffCanvasNavbarProps = {
+  children: [React.ReactNode, React.ReactNode, React.ReactNode];
+  linkWidth: Number;
+  direction: string;
 };

@@ -47,7 +47,7 @@ const HotelBooking = () => {
   };
   const handleFocus = (focusedInput: string) => setIsFocused(focusedInput);
   useAllisBlurred(() => setIsFocused(""));
-  const { refetch, isFetching, isFetched } = useUseQuery(
+  const { refetch, isFetching, isFetched, isIdle } = useUseQuery(
     "hotel-locations",
     "https://apidojo-booking-v1.p.rapidapi.com/locations/auto-complete",
     false,
@@ -68,6 +68,8 @@ const HotelBooking = () => {
     _cities.push(<option key="0">CITY, COUNTRY</option>);
     _cities.push(<SearchPrompt isError={isFetched && !cities.length} isLoading={isFetching} key="2" searchTerm={hotelInfos.city} />);
   }
+
+  console.log(isIdle, "isIdle");
 
   if (!_cities.length) {
     _cities.push(<option key="0">CITY, COUNTRY</option>);

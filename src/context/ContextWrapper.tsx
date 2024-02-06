@@ -20,6 +20,8 @@ type AppContextType = {
   setSignupDetails: React.Dispatch<SetStateAction<signupDetailsType>>;
   signinDetails: signinDetailsType;
   setSigninDetails: React.Dispatch<SetStateAction<signinDetailsType>>;
+  isSignedIn: boolean;
+  setIsSignedIn: React.Dispatch<SetStateAction<boolean>>;
 };
 
 type ContextProps = {
@@ -41,6 +43,7 @@ const ContextWrapper = ({ children }: ContextProps) => {
     email: "",
     password: "",
   });
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   const location = useLocation();
   const currentDate = useMemo(() => new Date(), []);
@@ -68,7 +71,7 @@ const ContextWrapper = ({ children }: ContextProps) => {
     }
   }, [pathname]);
   return (
-    <appContext.Provider value={{ flightLink, currentDate, currentDay, currentMonth, currentMonthDate, tomorrowDate, setNtnIsMounted, setNotificationContent, signupDetails, setSignupDetails, signinDetails, setSigninDetails }}>
+    <appContext.Provider value={{ flightLink, currentDate, currentDay, currentMonth, currentMonthDate, tomorrowDate, setNtnIsMounted, setNotificationContent, signupDetails, setSignupDetails, signinDetails, setSigninDetails, isSignedIn, setIsSignedIn }}>
       <div style={{ position: "relative" }}>
         {children}
         {ntnIsMounted && <Notification content={notificationContent} mount={setNtnIsMounted} />}

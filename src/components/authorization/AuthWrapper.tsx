@@ -7,7 +7,7 @@ import Button from "../Button";
 import travelbeta from "../../assests/travelbeta.png";
 import { AuthWrapperProps } from "../../utils/data";
 
-const AuthWrapper = ({ header, children, buttonLabel }: AuthWrapperProps) => {
+const AuthWrapper = ({ header, children, buttonLabel, handleFormSubmit }: AuthWrapperProps) => {
   return (
     <div>
       <div className="d-flex justify-content-center p-2" style={{ borderBottom: "solid rgb(245, 245, 245) thin" }}>
@@ -18,7 +18,7 @@ const AuthWrapper = ({ header, children, buttonLabel }: AuthWrapperProps) => {
       <div className="d-flex justify-content-center p-4">
         <h1 style={{ fontSize: "18px" }}>{header}</h1>
       </div>
-      <form className="p-2 w-100">
+      <form className="p-2 w-100" onSubmit={handleFormSubmit}>
         {children}
         <Button buttonLabel={buttonLabel} buttonType="submit" buttonClass="signupBtn">
           <span>

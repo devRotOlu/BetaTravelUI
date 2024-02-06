@@ -514,3 +514,32 @@ a:active {
   width: 100%;
   height: 55px;
 }
+
+.appInputs.passwordSafeToggle {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: fit-content;
+}
+
+.appInputs.passwordSafeToggle > input {
+  width: 17px;
+  height: 17px;
+}
+
+.appBtn.logout {
+  box-sizing: content-box;
+  justify-content: space-between;
+  width: 100px;
+  height: 40px;
+  background-color: white;
+  border-radius: 2px;
+  color: black;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 10px;
+  z-index: 10000000;
+  text-align: center;
+  padding: 0 10px;
+}
