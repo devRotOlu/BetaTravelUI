@@ -11,7 +11,7 @@ const User = () => {
     const _setToLogout = () => setToLogout(false);
     window.addEventListener("click", _setToLogout);
     return () => window.removeEventListener("click", _setToLogout);
-  });
+  }, []);
   return (
     <div
       className="d-flex align-items-center gap-2"
@@ -25,7 +25,7 @@ const User = () => {
         <img style={{ width: "100%", borderRadius: "inherit" }} src={boy} alt="User" />
       </div>
       <Icon icon="ri:arrow-down-s-line" />
-      {toLogout && <LogoutBtn />}
+      {toLogout && <LogoutBtn btnClass="logout" />}
     </div>
   );
 };

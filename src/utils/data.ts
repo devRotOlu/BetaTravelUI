@@ -228,8 +228,12 @@ export type AuthFooterProps = {
   link: string;
 };
 
-export type OffCanvasNavbarProps = {
+export type NavbarOffCanvasProps = {
   children: [React.ReactNode, React.ReactNode, React.ReactNode];
   linkWidth: Number;
   direction: string;
+};
+
+export type LogoutBtnProps = {
+  btnClass: string;
 };

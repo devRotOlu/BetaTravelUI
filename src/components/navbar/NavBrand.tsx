@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import travelbeta from "../assests/travelbeta.png";
+import travelbeta from "../../assests/travelbeta.png";
 
 const NavBrand = () => {
   return (

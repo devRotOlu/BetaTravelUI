@@ -1,6 +1,13 @@
 import React, { useEffect, useState, useMemo, SetStateAction } from "react";
 
 import Notification from "../components/home/flightBooking/Notification";
+import NavbarOffCanvas from "../components/NavbarOffCanvas";
+import NavBrand from "../components/navbar/NavBrand";
+import NavbarExpand from "../components/navbar/NavbarExpand";
+import NavbarCancel from "../components/navbar/NavbarCancel";
+import UserNavigation from "../components/navigation/UserNavigation";
+import User from "../components/dashboard/User";
+import AuthorizedUserNavigation from "../components/navigation/AuthorizedUserNavigation";
 
 import { useLocation } from "react-router-dom";
 
@@ -72,7 +79,33 @@ const ContextWrapper = ({ children }: ContextProps) => {
   }, [pathname]);
   return (
     <appContext.Provider value={{ flightLink, currentDate, currentDay, currentMonth, currentMonthDate, tomorrowDate, setNtnIsMounted, setNotificationContent, signupDetails, setSignupDetails, signinDetails, setSigninDetails, isSignedIn, setIsSignedIn }}>
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", minHeight: "100vh" }}>
+        {!isSignedIn && (
+          <NavbarOffCanvas linkWidth={100} direction="end">
+            <>
+              <NavBrand />
+              <NavbarExpand />
+            </>
+            <>
+              <NavBrand />
+              <NavbarCancel />
+            </>
+            <UserNavigation />
+          </NavbarOffCanvas>
+        )}
+        {isSignedIn && (
+          <NavbarOffCanvas linkWidth={75} direction="start">
+            <>
+              <NavbarExpand />
+              <User />
+            </>
+            <>
+              <NavBrand />
+              <NavbarCancel />
+            </>
+            <AuthorizedUserNavigation />
+          </NavbarOffCanvas>
+        )}
         {children}
         {ntnIsMounted && <Notification content={notificationContent} mount={setNtnIsMounted} />}
       </div>

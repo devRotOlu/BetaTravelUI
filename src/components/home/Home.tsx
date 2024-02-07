@@ -4,11 +4,6 @@ import { Link, useNavigate, Outlet } from "react-router-dom";
 
 import Tab from "./Tab";
 import List from "./List";
-import OffCanvasNavbar from "../OffCanvasNavbar";
-import NavbarCancel from "../NavbarCancel";
-import AppNavigation from "./AppNavigation";
-import NavbarExpand from "../NavbarExpand";
-import NavBrand from "../NavBrand";
 
 import { useRouteEventListener } from "../../utils/useCustomHooks/useRouteEventListener";
 import { homeTabLinks } from "../../utils/data";
@@ -43,27 +38,14 @@ const Home = () => {
     );
   });
   return (
-    <div>
-      <OffCanvasNavbar linkWidth={100} direction="end">
-        <>
-          <NavBrand />
-          <NavbarExpand />
-        </>
-        <>
-          <NavBrand />
-          <NavbarCancel />
-        </>
-        <AppNavigation />
-      </OffCanvasNavbar>
-      <main>
-        <Tab className="home_navTab py-4 px-2 column-gap-3 row-gap-4 m-0" ref={routeRef}>
-          {links}
-        </Tab>
-        <form className="bookingsForm container-fluid d-flex flex-column justify-content-center pb-4 py-4">
-          <Outlet />
-        </form>
-      </main>
-    </div>
+    <main>
+      <Tab className="home_navTab py-4 px-2 column-gap-3 row-gap-4 m-0" ref={routeRef}>
+        {links}
+      </Tab>
+      <form className="bookingsForm container-fluid d-flex flex-column justify-content-center pb-4 py-4">
+        <Outlet />
+      </form>
+    </main>
   );
 };
 

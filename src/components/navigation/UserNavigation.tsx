@@ -2,11 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
 
-const AppNavigation = () => {
+const UserNavigation = () => {
   const icon = "ion:chevron-forward-outline";
 
   return (
-    <ul className="navbar-nav justify-content-end flex-grow-1  row-gap-3">
+    <ul className="navbar-nav justify-content-end flex-grow-1  row-gap-3 pt-5 ps-3 pe-3">
       <li className="nav-item">
         <Link to="/">
           Visa
@@ -41,4 +41,4 @@ const AppNavigation = () => {
   );
 };
 
-export default AppNavigation;
+export default UserNavigation;

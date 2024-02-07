@@ -527,12 +527,13 @@ a:active {
   height: 17px;
 }
 
-.appBtn.logout {
+.logout {
   box-sizing: content-box;
   justify-content: space-between;
   width: 100px;
   height: 40px;
   background-color: white;
+  border: thin;
   border-radius: 2px;
   color: black;
   position: absolute;
@@ -542,4 +543,25 @@ a:active {
   z-index: 10000000;
   text-align: center;
   padding: 0 10px;
+}
+
+.navLogout {
+  display: flex;
+  gap: 20px;
+  width: 100px;
+  margin-left: 16px;
+  background-color: darkblue;
+  color: white;
+  border: thin;
+}
+
+.authUserLink > a {
+  color: white;
+}
+
+.authUserLink.userPage > a {
+  width: fit-content;
+  display: flex;
+  gap: 20px;
+  align-items: center;
 }
