@@ -18,7 +18,7 @@ const AuthWrapper = ({ header, children, buttonLabel, handleFormSubmit }: AuthWr
       <div className="d-flex justify-content-center p-4">
         <h1 style={{ fontSize: "18px" }}>{header}</h1>
       </div>
-      <form className="p-2 w-100" onSubmit={handleFormSubmit}>
+      <form className="p-4 w-100" onSubmit={handleFormSubmit}>
         {children}
         <Button buttonLabel={buttonLabel} buttonType="submit" buttonClass="signupBtn">
           <span>

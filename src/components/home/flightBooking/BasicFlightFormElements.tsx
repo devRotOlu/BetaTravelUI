@@ -28,6 +28,7 @@ const headers = {
 const BasicFlightFormElements = ({ focusedElements: { destination, departure, calendar }, flightIndex }: BasicFlightFormElementsProps) => {
   const flightData = useContext(flightContext);
   const appData = useContext(appContext);
+
   const [destAirports, setDestAirPorts] = useState<airPortType[]>([]);
   const [departAirports, setDepartAirPorts] = useState<airPortType[]>([]);
   const [selectedDepart, setSelectedDepart] = useState("");
@@ -133,7 +134,6 @@ const BasicFlightFormElements = ({ focusedElements: { destination, departure, ca
 
   useEffect(() => {
     if (debouncedDepart.length >= 3) {
-      console.log("fetching");
       refetchDepart({
         throwOnError: true,
       });

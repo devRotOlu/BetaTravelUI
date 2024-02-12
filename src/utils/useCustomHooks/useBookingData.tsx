@@ -1,7 +1,7 @@
 import React, { useContext, SetStateAction, useEffect, useRef } from "react";
 
 import { hotelContext } from "../../context/HotelContext";
-import { roomType, roomGuestType } from "../data";
+import { roomType, roomGuestType, RoomGuestAction } from "../data";
 
 type BookingData = {
   setRooms: React.Dispatch<SetStateAction<roomType>>;
@@ -10,7 +10,7 @@ type BookingData = {
   childMinCount: number;
   roomCount: number;
   roomGuests: roomGuestType;
-  setRoomGuests: React.Dispatch<SetStateAction<roomGuestType>>;
+  roomGuestsReducer: React.Dispatch<RoomGuestAction>;
 };
 
 const useBookingData = (roomIndex: number): BookingData => {
@@ -18,7 +18,7 @@ const useBookingData = (roomIndex: number): BookingData => {
   const childMinCount = 0;
 
   const hotelData = useContext(hotelContext);
-  const { setTotalGuest, setRooms, roomCount, roomGuests, setRoomGuests } = hotelData;
+  const { setTotalGuest, setRooms, roomCount, roomGuests, roomGuestsReducer } = hotelData;
   const { adults, children: _children, isIntialRender } = roomGuests[roomIndex];
   const prevTotal = useRef(adults + _children);
 
@@ -34,17 +34,13 @@ const useBookingData = (roomIndex: number): BookingData => {
   }, [adults, _children, setTotalGuest, roomIndex]);
   useEffect(() => {
     if (isIntialRender) {
-      setRoomGuests((prevGuests) => {
-        return prevGuests.map((room, index) => {
-          if (index === roomIndex) {
-            return { ...room, isIntialRender: false };
-          }
-          return room;
-        });
+      roomGuestsReducer({
+        type: "initialize",
+        roomIndex,
       });
     }
-  }, [isIntialRender, setRoomGuests, roomIndex]);
-  return { setRooms, setTotalGuest, adultMinCount, childMinCount, roomCount, roomGuests, setRoomGuests: hotelData.setRoomGuests };
+  }, [isIntialRender, roomGuestsReducer, roomIndex]);
+  return { setRooms, setTotalGuest, adultMinCount, childMinCount, roomCount, roomGuests, roomGuestsReducer };
 };
 
 export default useBookingData;

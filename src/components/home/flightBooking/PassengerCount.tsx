@@ -11,7 +11,7 @@ import { flightContext } from "../../../context/FlightContext";
 
 const PassengerCount = () => {
   const flightData = useContext(flightContext);
-  const { passengerCount, setPassengerCount } = flightData;
+  const { passengerCount, passengerCountReducer } = flightData;
 
   const { adults, children, infants } = passengerCount[0];
 
@@ -19,13 +19,13 @@ const PassengerCount = () => {
     <Wrapper>
       <Pax>
         <AdultPax>
-          <PaxButtons count={adults} minCount={1} setCount={setPassengerCount} guestType="adults" roomIndex={0} />
+          <PaxButtons count={adults} minCount={1} setCount={passengerCountReducer} guestType="adults" roomIndex={0} />
         </AdultPax>
         <ChildPax label="Children" ageRange="2 - 11yrs">
-          <PaxButtons count={children} minCount={0} setCount={setPassengerCount} guestType="children" roomIndex={0} />
+          <PaxButtons count={children} minCount={0} setCount={passengerCountReducer} guestType="children" roomIndex={0} />
         </ChildPax>
         <ChildPax label="Infants" ageRange="Under 2 yrs">
-          <PaxButtons count={infants} minCount={0} setCount={setPassengerCount} guestType="infants" roomIndex={0} />
+          <PaxButtons count={infants} minCount={0} setCount={passengerCountReducer} guestType="infants" roomIndex={0} />
         </ChildPax>
       </Pax>
       <BookingButtons />

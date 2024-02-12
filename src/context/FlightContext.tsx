@@ -1,13 +1,14 @@
-import { useState, Dispatch, SetStateAction, createContext, useCallback } from "react";
+import { useState, Dispatch, SetStateAction, createContext, useCallback, useReducer } from "react";
 
-import { roomGuestType, flightDetailsType } from "../utils/data";
+import { roomGuestReducer } from "../utils/helperFunctions/roomGuestReducer";
+import { roomGuestType, flightDetailsType, RoomGuestAction } from "../utils/data";
 
 type flightContextType = {
   _flightDetails: flightDetailsType;
   flightDetails: flightDetailsType[];
   setFlightDetails: Dispatch<SetStateAction<flightDetailsType[]>>;
   passengerCount: roomGuestType;
-  setPassengerCount: Dispatch<SetStateAction<roomGuestType>>;
+  passengerCountReducer: React.Dispatch<RoomGuestAction>;
   isFocused: string;
   setIsFocused: Dispatch<SetStateAction<string>>;
   blurAll: () => void;
@@ -34,9 +35,9 @@ const FlightContext = ({ children }: flightContextProps) => {
     { ..._flightDetails, flightClass: "Premium Economy" },
     { ..._flightDetails, flightClass: "Economy" },
   ]);
-  const [passengerCount, setPassengerCount] = useState([{ adults: 1, children: 0, infants: 0, isIntialRender: true }]);
+  const [passengerCount, passengerCountReducer] = useReducer(roomGuestReducer, [{ adults: 1, children: 0, infants: 0, isIntialRender: true }]);
   const blurAll = useCallback(() => setIsFocused(""), []);
-  return <flightContext.Provider value={{ flightDetails, setFlightDetails, passengerCount, setPassengerCount, isFocused, setIsFocused, blurAll, _flightDetails }}>{children}</flightContext.Provider>;
+  return <flightContext.Provider value={{ flightDetails, setFlightDetails, passengerCount, passengerCountReducer, isFocused, setIsFocused, blurAll, _flightDetails }}>{children}</flightContext.Provider>;
 };
 
 export default FlightContext;

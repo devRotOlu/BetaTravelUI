@@ -553,6 +553,7 @@ a:active {
   background-color: darkblue;
   color: white;
   border: thin;
+  height: fit-content;
 }
 
 .authUserLink > a {
@@ -564,4 +565,19 @@ a:active {
   display: flex;
   gap: 20px;
   align-items: center;
+}
+
+.navbar-toggler:focus,
+.navbar-toggler:active,
+.navbar-toggler-icon:focus,
+.btn-close:focus,
+.btn-close:active {
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
+
+.navbar-toggler,
+.navbar-toggler-icon {
+  border: none;
 }

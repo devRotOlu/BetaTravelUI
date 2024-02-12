@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import AuthWrapper from "./AuthWrapper";
@@ -22,7 +22,9 @@ const SignIn = () => {
 
   const navigate = useNavigate();
 
-  if (isSignedIn) navigate("/dashboard");
+  useEffect(() => {
+    if (isSignedIn) navigate("/dashboard");
+  }, [isSignedIn, navigate]);
 
   return (
     <>

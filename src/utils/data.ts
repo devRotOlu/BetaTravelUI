@@ -88,6 +88,14 @@ export type roomGuestType = {
   isIntialRender: boolean;
 }[];
 
+export type RoomGuestAction = {
+  type: "initialize" | "add" | "remove" | "increaseGuests" | "decreaseGuests";
+  roomIndex: number;
+  guestType?: string;
+  prevGuestCount?: number;
+  guestMinCount?: number;
+};
+
 export type flightDetailsType = {
   depart: string;
   dest: string;
@@ -104,7 +112,7 @@ export type FlightClassesProps = {
 
 export type PaxButtonsProps = {
   count: number;
-  setCount: React.Dispatch<React.SetStateAction<roomGuestType>>;
+  setCount: React.Dispatch<RoomGuestAction>;
   minCount: number;
   guestType: string;
   roomIndex: number;
@@ -236,4 +244,8 @@ export type NavbarOffCanvasProps = {
 
 export type LogoutBtnProps = {
   btnClass: string;
+};
+
+export type NavigationProps = {
+  handleNavbar: () => void;
 };

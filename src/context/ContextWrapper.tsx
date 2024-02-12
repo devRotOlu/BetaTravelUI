@@ -1,21 +1,10 @@
-import React, { useEffect, useState, useMemo, SetStateAction } from "react";
+import React, { useState, useMemo, SetStateAction } from "react";
 
 import Notification from "../components/home/flightBooking/Notification";
-import NavbarOffCanvas from "../components/NavbarOffCanvas";
-import NavBrand from "../components/navbar/NavBrand";
-import NavbarExpand from "../components/navbar/NavbarExpand";
-import NavbarCancel from "../components/navbar/NavbarCancel";
-import UserNavigation from "../components/navigation/UserNavigation";
-import User from "../components/dashboard/User";
-import AuthorizedUserNavigation from "../components/navigation/AuthorizedUserNavigation";
 
-import { useLocation } from "react-router-dom";
-
-import { flightTabLinks, months, days, signupDetailsType, signinDetailsType } from "../utils/data";
-import { getRouteLocationIndex } from "../utils/helperFunctions/helperFunction";
+import { months, days, signupDetailsType, signinDetailsType } from "../utils/data";
 
 type AppContextType = {
-  flightLink: string;
   currentDate: Date;
   tomorrowDate: Date;
   currentMonth: string;
@@ -52,7 +41,6 @@ const ContextWrapper = ({ children }: ContextProps) => {
   });
   const [isSignedIn, setIsSignedIn] = useState(false);
 
-  const location = useLocation();
   const currentDate = useMemo(() => new Date(), []);
   const currentMonth = months[currentDate.getMonth()];
   const currentDay = days[currentDate.getDay()];
@@ -67,45 +55,9 @@ const ContextWrapper = ({ children }: ContextProps) => {
     return yearIncreament;
   }, [currentMonth, currentDate, currentMonthDate]);
 
-  const { pathname } = location;
-
-  const [flightLink, setFlightLink] = useState("");
-
-  useEffect(() => {
-    const routeIndex = getRouteLocationIndex(pathname, flightTabLinks, 3);
-    if (routeIndex >= 0 && pathname.includes("flight")) {
-      setFlightLink(flightTabLinks[routeIndex].link);
-    }
-  }, [pathname]);
   return (
-    <appContext.Provider value={{ flightLink, currentDate, currentDay, currentMonth, currentMonthDate, tomorrowDate, setNtnIsMounted, setNotificationContent, signupDetails, setSignupDetails, signinDetails, setSigninDetails, isSignedIn, setIsSignedIn }}>
+    <appContext.Provider value={{ currentDate, currentDay, currentMonth, currentMonthDate, tomorrowDate, setNtnIsMounted, setNotificationContent, signupDetails, setSignupDetails, signinDetails, setSigninDetails, isSignedIn, setIsSignedIn }}>
       <div style={{ position: "relative", minHeight: "100vh" }}>
-        {!isSignedIn && (
-          <NavbarOffCanvas linkWidth={100} direction="end">
-            <>
-              <NavBrand />
-              <NavbarExpand />
-            </>
-            <>
-              <NavBrand />
-              <NavbarCancel />
-            </>
-            <UserNavigation />
-          </NavbarOffCanvas>
-        )}
-        {isSignedIn && (
-          <NavbarOffCanvas linkWidth={75} direction="start">
-            <>
-              <NavbarExpand />
-              <User />
-            </>
-            <>
-              <NavBrand />
-              <NavbarCancel />
-            </>
-            <AuthorizedUserNavigation />
-          </NavbarOffCanvas>
-        )}
         {children}
         {ntnIsMounted && <Notification content={notificationContent} mount={setNtnIsMounted} />}
       </div>

@@ -1,28 +1,21 @@
-import { useEffect, useRef } from "react";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import { getRouteLocationIndex } from "../helperFunctions/helperFunction";
+import { getRoute } from "../helperFunctions/helperFunction";
 
-export const useRouteEventListener = (links: { link: string; icon?: string; linkName: string }[], split: number) => {
+export const useRouteEventListener = (links: string[], split: number) => {
   const location = useLocation();
 
   const { pathname } = location;
 
-  var initialRouteIndex = getRouteLocationIndex(pathname, links, split);
+  var _route = getRoute(pathname, links, split);
 
-  initialRouteIndex = initialRouteIndex === -1 ? 0 : initialRouteIndex;
+  const [currentPathName, setCurrentPathName] = useState(pathname);
+  const [currentRoute, setCurrentRoute] = useState(_route);
 
-  const routesRef = useRef<HTMLUListElement>(null!);
-  const routeIndex = useRef(initialRouteIndex);
-
-  useEffect(() => {
-    const possibleRouteIndex = getRouteLocationIndex(pathname, links, split);
-    if (possibleRouteIndex >= 0) {
-      routesRef.current.children[routeIndex.current].classList.remove("nav-item-active");
-      routesRef.current.children[possibleRouteIndex].classList.add("nav-item-active");
-      routeIndex.current = possibleRouteIndex;
-    }
-  }, [pathname, links, split]);
-
-  return routesRef;
+  if (pathname !== currentPathName) {
+    setCurrentPathName(pathname);
+    setCurrentRoute(_route);
+  }
+  return currentRoute;
 };

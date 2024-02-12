@@ -11,14 +11,12 @@ const PaxButtons = ({ count, setCount, minCount, guestType, roomIndex }: PaxButt
       <Button
         handleClick={(event: React.MouseEvent) => {
           event.stopPropagation();
-          const _count = count - 1;
-          setCount((prevCount) => {
-            return prevCount.map((room, index) => {
-              if (index === roomIndex) {
-                return { ...room, [guestType]: _count < minCount ? minCount : _count };
-              }
-              return room;
-            });
+          setCount({
+            type: "decreaseGuests",
+            roomIndex,
+            prevGuestCount: count,
+            guestType,
+            guestMinCount: minCount,
           });
         }}
         buttonClass="paxBtn paxBtn_1"
@@ -32,13 +30,11 @@ const PaxButtons = ({ count, setCount, minCount, guestType, roomIndex }: PaxButt
         buttonType="button"
         handleClick={(event: React.MouseEvent) => {
           event.stopPropagation();
-          setCount((prevCount) => {
-            return prevCount.map((room, index) => {
-              if (index === roomIndex) {
-                return { ...room, [guestType]: count + 1 };
-              }
-              return room;
-            });
+          setCount({
+            type: "increaseGuests",
+            roomIndex,
+            guestType,
+            prevGuestCount: count,
           });
         }}
       >

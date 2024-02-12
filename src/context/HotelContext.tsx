@@ -1,6 +1,7 @@
-import React, { SetStateAction, useState } from "react";
+import React, { SetStateAction, useState, useReducer } from "react";
 
-import { roomType, roomGuestType } from "../utils/data";
+import { roomGuestReducer } from "../utils/helperFunctions/roomGuestReducer";
+import { roomType, roomGuestType, RoomGuestAction } from "../utils/data";
 
 type hotelContextType = {
   totalGuest: number;
@@ -9,7 +10,7 @@ type hotelContextType = {
   setRooms: React.Dispatch<SetStateAction<roomType>>;
   roomCount: number;
   roomGuests: roomGuestType;
-  setRoomGuests: React.Dispatch<SetStateAction<roomGuestType>>;
+  roomGuestsReducer: React.Dispatch<RoomGuestAction>;
 };
 
 type hotelContextProps = {
@@ -25,7 +26,8 @@ const HotelContext = ({ children }: hotelContextProps) => {
     if (roomCount < rooms.length) setTotalGuest((prevCount) => ++prevCount);
     setRoomCount(rooms.length);
   }
-  const [roomGuests, setRoomGuests] = useState<roomGuestType>(() => [
+
+  const [roomGuests, roomGuestsReducer] = useReducer(roomGuestReducer, [
     {
       adults: 1,
       children: 0,
@@ -34,7 +36,7 @@ const HotelContext = ({ children }: hotelContextProps) => {
     },
   ]);
 
-  return <hotelContext.Provider value={{ totalGuest, setTotalGuest, rooms, setRooms, roomCount, roomGuests, setRoomGuests }}>{children}</hotelContext.Provider>;
+  return <hotelContext.Provider value={{ totalGuest, setTotalGuest, rooms, setRooms, roomCount, roomGuests, roomGuestsReducer }}>{children}</hotelContext.Provider>;
 };
 
 export default HotelContext;

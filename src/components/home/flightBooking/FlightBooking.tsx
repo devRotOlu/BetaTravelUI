@@ -1,42 +1,42 @@
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 
 import Tab from "../Tab";
-import List from "../List";
 import Button from "../../Button";
 import QualityCheckMark from "../QualityCheckMark";
 import FlightContext from "../../../context/FlightContext";
 
 import { flightTabLinks } from "../../../utils/data";
 import { useRouteEventListener } from "../../../utils/useCustomHooks/useRouteEventListener";
-import { appContext } from "../../../context/ContextWrapper";
+
+const _links = flightTabLinks.map(({ link }) => link);
 
 const FlightBooking = () => {
-  const routeRef = useRouteEventListener(flightTabLinks, 3);
+  const currentRoute = useRouteEventListener(_links, 3);
   const navigate = useNavigate();
-  const appStates = useContext(appContext);
-  const { flightLink } = appStates;
 
   useEffect(() => {
-    if (flightLink) navigate(flightLink);
+    if (currentRoute) navigate(currentRoute);
     else navigate("round-trip");
   }, []);
 
   const links = flightTabLinks.map(({ link, linkName }, index) => {
+    const backgroundColor = currentRoute === link ? "white" : "";
+    const color = currentRoute === link ? "darkblue" : "";
+    const paddingLeft = currentRoute === link ? "15px" : "";
+    const paddingRight = currentRoute === link ? "15px" : "";
     return (
-      <List key={index}>
+      <li className="nav-item" key={index} style={{ fontSize: "14px", color, backgroundColor, borderRadius: "2px", paddingLeft, paddingRight }}>
         <Link className="nav-link" to={link}>
           <span>{linkName}</span>
         </Link>
-      </List>
+      </li>
     );
   });
   return (
     <FlightContext>
-      <Tab ref={routeRef} className="flight_navTab d-flex justify-content-between px-1 mb-4">
-        {links}
-      </Tab>
+      <Tab className="flight_navTab d-flex justify-content-between px-1 mb-4">{links}</Tab>
       <Outlet />
       <Button buttonLabel="Search Flights" buttonType="submit">
         <span>
