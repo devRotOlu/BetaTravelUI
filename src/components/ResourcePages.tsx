@@ -40,7 +40,9 @@ const ResourcePages = () => {
             <User />
           </>
           <>
-            <NavBrand />
+            <span onClick={() => handleNavbar()}>
+              <NavBrand />
+            </span>
             <NavbarCancel ref={cancelNavbarRef} />
           </>
           <AuthorizedUserNavigation handleNavbar={handleNavbar} />

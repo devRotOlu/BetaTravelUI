@@ -64,11 +64,13 @@ export type DropDownProps = {
   inputId: string;
   value: string;
   placeHolder?: string;
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   dropDownClass?: string;
   handleFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   inputClass?: string;
   isFocused?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
 };
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -96,15 +98,24 @@ export type RoomGuestAction = {
   guestMinCount?: number;
 };
 
-export type flightDetailsType = {
-  depart: string;
-  dest: string;
-  departDate: string;
-  returnDate: string;
-  flightClass: string;
+export type flightDetailsKeyType = "depart" | "dest" | "departDate";
+
+export type locationType = {
+  location: string;
+  country: string;
+  city: string;
+  AirportCode: string;
 };
 
-export type FlightClassesProps = {
+export type flightDetailsType = {
+  depart: locationType;
+  dest: locationType;
+  departDate: Date;
+  returnDate: Date;
+  flightClassIndex: number;
+};
+
+export type ClassListProps = {
   defaultClass: string;
   setFlightClass: React.Dispatch<React.SetStateAction<flightDetailsType[]>>;
   flightIndex: number;
@@ -137,20 +148,97 @@ export type RoomBookingProps = {
   roomIndex: number;
 };
 
-export type ValuePiece = Date;
-export type Value = [ValuePiece, ValuePiece];
+export type Value = [Date, Date];
 
 export type BookingCalendarProps = {
-  setDate: React.Dispatch<SetStateAction<Value>>;
+  setDate: (date1: Date, date2?: Date) => void;
   showDoubleView: boolean;
-  value: Value;
   selectRange: boolean;
+};
+
+export type bookingLegsType = {
+  fromId: string;
+  toId: string;
+  date: string;
+}[];
+
+export type flightBookingParamsType = {
+  leg?: bookingLegsType;
+  adults: string;
+  departDate?: string;
+  returnDate?: string;
+  fromId?: string;
+  toId?: string;
+  children?: string;
+  cabinClass: string;
+  currency_code: "NGN";
+};
+
+export type searchResultType = "oneWayFlight" | "roundTripFlight" | "multiCityFlight";
+export type resultAirportType = {
+  city: string;
+  cityName: string;
+  code: string;
+  countryName: string;
+  name: string;
+};
+
+export type flightSliderPropType = {
+  children: React.ReactNode;
+  cellHeight: string;
+  columnWidth: number;
+  flightNamesCount: number;
+};
+
+export type carriersDataType = { name: string; logo: string }[];
+
+export type flightSearchDataType = {
+  segments: {
+    departureTime: string;
+    arrivalTime: string;
+    legs: { arrivalAirport: resultAirportType; arrivalTime: string; carriersData: carriersDataType; flightInfo: { flightNumber: number }; departureAirport: resultAirportType; departureTime: string; totalTime: number; cabinClass: string }[];
+    totalTime: number;
+    travellerCheckedLuggage: {
+      luggageAllowance: {
+        maxPiece: number;
+      };
+    }[];
+  }[];
+  priceBreakdown: { total: { units: number } };
+  token: string;
+}[];
+
+export type flightGroupingPropType = { flightData: flightSearchDataType; cellHeight: string; columnWidth: number; flightNames: string[]; flightLogos: string[] };
+export type searchFlightDetailsType = {
+  departDate: Date;
+  departLocation: string;
+  depart_code: string;
+  destLocation: string;
+  dest_code: string;
+  adults: number;
+  children: number;
+  infants: number;
+  returnDate?: Date;
+  flightClass: string;
+};
+
+export type flightSearchDetailsProps = {
+  departDate: string;
+  departLocation: string;
+  depart_code: string;
+  destLocation: string;
+  dest_code: string;
+  adults: number;
+  children: number;
+  infants: number;
+  returnDate?: string;
+  flightClass: string;
 };
 
 export const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-export type prevLocationtype = { cityName: string; displayName: string };
+export type prevLocationtype = { city: string; country: string; AirportCode: string };
 
 export type PossibleLocationsProps = {
   airPorts: airPortType[];
@@ -158,8 +246,9 @@ export type PossibleLocationsProps = {
   previousSearches: prevLocationtype[];
   children: ReactNode;
   searchTerm: string;
-  handleClick: (display_name: string, cityName: string) => void;
-  setLocation: React.Dispatch<SetStateAction<string>>;
+  handleClick: (iata: string) => void;
+  setLocation: (prop: flightDetailsKeyType, propValue: locationType) => void;
+  locationType: flightDetailsKeyType;
 };
 
 export type roomType = { roomId: number }[];
@@ -200,10 +289,10 @@ export type SeatBookingDropDownProps = {
 };
 
 export type airPortType = {
-  name: string;
-  code: string;
-  display_name: string;
-  city_name: string;
+  AirportCode: string;
+  AirportName: string;
+  city: string;
+  country: string;
 };
 
 export type signupDetailsType = {
@@ -249,3 +338,44 @@ export type LogoutBtnProps = {
 export type NavigationProps = {
   handleNavbar: () => void;
 };
+
+export type SearchResultNotificationProps = {
+  departure: string;
+  destination: string;
+  departureDate: string;
+  returnDate?: string;
+  passengerCount: number;
+  flightClass: string;
+};
+
+export type ReactPortalProps = {
+  wrapperId: string;
+  children: React.ReactNode;
+};
+
+export class Queue {
+  items: { [key: number]: any } = {};
+  front = 0;
+  rear = 0;
+  enqueue(value: any) {
+    if (!this.rear) {
+      this.front++;
+      this.rear++;
+    } else {
+      this.rear++;
+    }
+    this.items[this.rear] = value;
+  }
+  dequeue() {
+    if (!this.front || this.rear < this.front) {
+      return null;
+    }
+    this.front++;
+    const value = this.items[this.front - 1];
+    delete this.items[this.front - 1];
+    return value;
+  }
+  isEmpty() {
+    return this.rear < this.front;
+  }
+}

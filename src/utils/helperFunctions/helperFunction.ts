@@ -6,3 +6,11 @@ export const getRoute = (pathName: string, links: string[], split: number): stri
   if (_links.length) return _links[0];
   return "";
 };
+
+export const appendModalWrapperToBody = (wrapperId: string) => {
+  const modalWrapper = document.createElement("div");
+  modalWrapper.className = "modal";
+  modalWrapper.id = wrapperId;
+  document.body.appendChild(modalWrapper);
+  return modalWrapper;
+};

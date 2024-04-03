@@ -5,7 +5,7 @@ import "bootstrap/dist/js/bootstrap.min.js";
 
 import Home from "./home/Home";
 import CarBooking from "./home/CarBooking";
-import FlightBooking from "./home/flightBooking/FlightBooking";
+import FlightBookingWrapper from "./home/flightBooking/FlightBookingWrapper";
 import HotelBookingWrapper from "./home/hotelBooking/HotelBookingWrapper";
 import ManageBookings from "./home/ManageBookings";
 import OneWayBooking from "./home/flightBooking/OneWayBooking";
@@ -19,6 +19,7 @@ import Account from "./authorizedUserResources/Account";
 import Chat from "./authorizedUserResources/Chat";
 import AuthorizedUserResources from "./authorizedUserResources/AuthorizedUserResources";
 import ResourcePages from "./ResourcePages";
+import SearchResults from "./searchResults/SearchResults";
 
 import "react-calendar/dist/Calendar.css";
 import "../assests/styles/App.css";
@@ -29,7 +30,7 @@ function App() {
       <Routes>
         <Route element={<ResourcePages />}>
           <Route path="/" element={<Home />}>
-            <Route path="flight" element={<FlightBooking />}>
+            <Route path="flight" element={<FlightBookingWrapper />}>
               <Route path="round-trip" element={<RoundTripBooking />} />
               <Route path="multi-city" element={<MultiCityBooking />} />
               <Route path="one-way" element={<OneWayBooking />} />
@@ -43,6 +44,7 @@ function App() {
             <Route path="account" element={<Account />} />
             <Route path="chat" element={<Chat />} />
           </Route>
+          <Route path="search/*" element={<SearchResults />} />
         </Route>
         <Route path="sign-up" element={<SignUp />} />
         <Route path="sign-in" element={<SignIn />} />

@@ -1,14 +1,21 @@
-import { useContext } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { Icon } from "@iconify/react";
 import Calendar from "react-calendar";
 
-import { BookingCalendarProps } from "../../utils/data";
+import { BookingCalendarProps, days, months } from "../../utils/data";
 import { appContext } from "../../context/ContextWrapper";
 
-const BookingCalendar = ({ setDate, showDoubleView, value, selectRange }: BookingCalendarProps) => {
+const BookingCalendar = ({ setDate, showDoubleView, selectRange }: BookingCalendarProps) => {
   const handleClick = (event: React.MouseEvent) => event.stopPropagation();
   const appData = useContext(appContext);
-  const { currentDate } = appData;
+  const { currentDate, blurAll } = appData;
+
+  const initialRenderRef = useRef(true);
+
+  useEffect(() => {
+    if (!initialRenderRef.current) blurAll();
+    if (initialRenderRef.current) initialRenderRef.current = false;
+  });
 
   return (
     <div onClick={handleClick} className="calendar">
@@ -26,16 +33,13 @@ const BookingCalendar = ({ setDate, showDoubleView, value, selectRange }: Bookin
         calendarType="gregory"
         onChange={(value) => {
           if (Array.isArray(value)) {
-            if (value[1] === null && value[0] !== null) {
-              setDate([value[0], value[0]]);
-            }
-            if (value[1] !== null && value[0] !== null) {
-              setDate([value[0], value[1]]);
-            }
+            const date1 = value[0];
+            const date2 = value[1];
+            if (date2 === null && date1 !== null) setDate(date1, date1);
+            if (date1 !== null && date2 !== null) setDate(date1, date2);
           }
         }}
         returnValue="range"
-        value={value}
       />
     </div>
   );

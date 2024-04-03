@@ -1,24 +1,20 @@
-import { AxiosResponse } from "axios";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { betaTravelAxios } from "../../axios/axios";
 
-const useUseQuery = (queryId: string, route: string, enabled: boolean, params?: {}, headers?: {}, onSuccess?: (data: AxiosResponse<any, any>) => void, onError?: () => void) => {
-  return useQuery(
-    queryId,
-    async () => {
+const useUseQuery = (queryKey: string[], route: string, enabled: boolean, params?: {}, headers?: {}) => {
+  return useQuery({
+    queryKey,
+    queryFn: async () => {
       return await betaTravelAxios.get(route, {
         params,
         headers,
       });
     },
-    {
-      enabled,
-      onSuccess,
-      onError,
-      cacheTime: 0,
-    }
-  );
+    enabled,
+    gcTime: 0,
+    networkMode: "offlineFirst",
+  });
 };
 
 export default useUseQuery;

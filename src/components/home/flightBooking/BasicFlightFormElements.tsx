@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import { Icon } from "@iconify/react";
 import { useCookies } from "react-cookie";
@@ -16,14 +16,31 @@ import useUseQuery from "../../../utils/useCustomHooks/useUseQuery";
 
 import { flightContext } from "../../../context/FlightContext";
 import { appContext } from "../../../context/ContextWrapper";
-import useAllisBlurred from "../../../utils/useCustomHooks/useAllisBlurred";
-import { Value, BasicFlightFormElementsProps, days, months, airPortType, prevLocationtype } from "../../../utils/data";
+import { BasicFlightFormElementsProps, airPortType, prevLocationtype, locationType, flightDetailsKeyType, days, months } from "../../../utils/data";
+import { AxiosResponse } from "axios";
+import { stringify } from "querystring";
 
-const route = "https://travel-advisor.p.rapidapi.com/airports/search";
+const host = "world-airports-directory.p.rapidapi.com";
 const headers = {
   "X-RapidAPI-Key": "2565c29410msh5d5d2f756f9eed5p130a89jsn0a7a959312b9",
-  "X-RapidAPI-Host": "travel-advisor.p.rapidapi.com",
+  "X-RapidAPI-Host": host,
 };
+
+const params = {
+  page: "1",
+  limit: "20",
+  sortBy: "AirportName:asc",
+};
+
+const getData = (data: AxiosResponse<any, any>): any[] => {
+  const results = data.data.results;
+  if (Array.isArray(results)) {
+    return results.map(({ AirportCode, AirportName, city, country }) => ({ AirportCode, AirportName, city, country }));
+  }
+  return [];
+};
+
+const typedLocationDefault = "Enter city";
 
 const BasicFlightFormElements = ({ focusedElements: { destination, departure, calendar }, flightIndex }: BasicFlightFormElementsProps) => {
   const flightData = useContext(flightContext);
@@ -31,132 +48,126 @@ const BasicFlightFormElements = ({ focusedElements: { destination, departure, ca
 
   const [destAirports, setDestAirPorts] = useState<airPortType[]>([]);
   const [departAirports, setDepartAirPorts] = useState<airPortType[]>([]);
-  const [selectedDepart, setSelectedDepart] = useState("");
-  const [selectedDest, setSelectedDest] = useState("");
+  const [typedLocations, setTypedLocations] = useState({
+    typedDest: typedLocationDefault,
+    typedDepart: typedLocationDefault,
+  });
+  const { typedDest, typedDepart } = typedLocations;
   const [prevSearches, setPrevSearches] = useState<prevLocationtype[]>([]);
 
-  const { currentDate, currentDay, currentMonth, currentMonthDate } = appData;
-  const [_departDate, setDepartDate] = useState<Value>([currentDate, currentDate]);
+  const { currentDay, currentMonth, currentMonthDate, setIsFocused, isFocused, blurAll, commaDelimitedDate } = appData;
 
-  const { flightDetails, setFlightDetails, setIsFocused, isFocused, blurAll } = flightData;
-  const _date = `${days[_departDate[0].getDay()]}, ${months[_departDate[0].getMonth()]} ${_departDate[0].getDate()}`;
-  const { depart, dest } = flightDetails[flightIndex];
+  const { flightDetails, setFlightDetails } = flightData;
 
-  const [debouncedDepart] = useDebounce(depart, 300);
-  const [debouncedDest] = useDebounce(dest, 300);
+  const {
+    depart: { location: departLocation },
+    dest: { location: destLocation },
+    departDate,
+  } = flightDetails[flightIndex];
+
+  const _departDate = commaDelimitedDate(departDate);
+
+  const [debouncedDepart] = useDebounce(typedDepart, 700);
+  const [debouncedDest] = useDebounce(typedDest, 700);
   const [cookie, setCookie] = useCookies(["locations"]);
   const { locations } = cookie;
 
-  const destRef = useRef<HTMLInputElement>(null!);
-  const departRef = useRef<HTMLInputElement>(null!);
-
-  const handleFocused = (focusedInput: string) => {
+  const handleFocus = (focusedInput: string, inputValue: string) => {
     setIsFocused(focusedInput);
   };
-  useAllisBlurred(blurAll);
-
-  const setCookies = (cityName: string, displayName: string) => {
-    if (Array.isArray(locations) && cityName) {
+  const setCookies = (locationDetails: locationType) => {
+    const { location: _location } = locationDetails;
+    if (Array.isArray(locations)) {
       let _flightDetails = locations.filter((item, index) => {
-        if (locations.length < 5) return item !== cityName;
-        return index < 5 || item !== cityName;
+        const { location } = item as locationType;
+        return location !== _location && index <= 3;
       });
-      setCookie("locations", JSON.stringify([{ cityName, displayName }, ..._flightDetails]));
-    } else if (!Array.isArray(locations) && cityName) {
-      setCookie("locations", JSON.stringify([{ cityName, displayName }]));
+      setCookie("locations", JSON.stringify([locationDetails, ..._flightDetails]));
+    } else if (!Array.isArray(locations)) {
+      setCookie("locations", JSON.stringify([locationDetails]));
     }
   };
 
-  const {
-    refetch: refetchDest,
-    isFetching: destIsFetching,
-    isFetched: destIsFetched,
-  } = useUseQuery(
-    "destination-airports",
-    route,
-    false,
-    {
-      query: debouncedDest,
-      locale: "en-us",
-    },
-    headers,
-    (data) => {
-      let _data = [];
-      if (Array.isArray(data.data)) _data = data.data.filter((_, index) => index < 5);
-      setDestAirPorts(_data);
-    },
-    () => setDestAirPorts([])
-  );
+  const query = isFocused === destination ? debouncedDest : debouncedDepart;
+  const { refetch, isFetching, isFetched, isPaused, data, isSuccess, isError } = useUseQuery(["airports"], `https://${host}/v1/airports/${query}`, false, params, headers);
 
-  const {
-    refetch: refetchDepart,
-    isFetching: departIsFetching,
-    isFetched: departIsFetched,
-  } = useUseQuery(
-    "departure-airports",
-    route,
-    false,
-    {
-      query: debouncedDepart,
-      locale: "en-us",
-    },
-    headers,
-    (data) =>
-      setDepartAirPorts(() => {
-        const _data = data.data;
-        if (Array.isArray(_data)) {
-          return _data.filter((_, index) => index < 5);
-        }
-        return [];
-      }),
-    () => {
-      console.log("error o");
-      setDepartAirPorts([]);
-    }
-  );
-  const handleDepartSelectn = (display_name: string, cityName: string) => {
-    const displayName = display_name.split("(")[0].trimEnd();
-    setSelectedDepart(displayName);
-    setCookies(cityName, displayName);
-    const data = departAirports.map(({ city_name, display_name }) => ({
-      cityName: city_name,
-      displayName: display_name.split("(")[0].trimEnd(),
+  const handleSelections = (locationDetails: locationType, airPort: airPortType[]) => {
+    setCookies(locationDetails);
+    const data = airPort.map(({ city, country, AirportCode }) => ({
+      city,
+      country,
+      AirportCode,
     }));
     setPrevSearches(data);
   };
-  const handleDestSelectn = (display_name: string, cityName: string) => {
-    const displayName = display_name.split("(")[0].trimEnd();
-    setSelectedDest(displayName);
-    setCookies(cityName, displayName);
-    const data = departAirports.map(({ city_name, display_name }) => ({ cityName: city_name, displayName: display_name.split("(")[0].trimEnd() }));
-    setPrevSearches(data);
+
+  const handleSetFlightDetails = (flightDetailsKey: flightDetailsKeyType, value: string | locationType | Date) => {
+    setFlightDetails((prevDetails) => {
+      return prevDetails.map((flight, index) => {
+        if (index === flightIndex) return { ...flight, [flightDetailsKey]: value };
+        return flight;
+      });
+    });
+  };
+
+  const handleSelectedDeparture = (selected_code: string) => {
+    let airport = departAirports.find(({ AirportCode }) => AirportCode === selected_code);
+    const { city, country, AirportCode } = airport!;
+    const locationDetails = { city, country, AirportCode, location: `${city}, ${country}` };
+    handleSetFlightDetails("depart", locationDetails);
+    handleSelections(locationDetails, departAirports);
+  };
+  const handleSelectedDestination = (selected_code: string) => {
+    const airport = destAirports.find(({ AirportCode }) => AirportCode === selected_code);
+    const { city, country, AirportCode } = airport!;
+    const locationDetails = { city, country, AirportCode, location: `${city}, ${country}` };
+    handleSetFlightDetails("dest", locationDetails);
+    handleSelections(locationDetails, destAirports);
+  };
+
+  const handleDepartureDate = (date: Date) => {
+    handleSetFlightDetails("departDate", date);
   };
 
   useEffect(() => {
-    if (debouncedDepart.length >= 3) {
-      refetchDepart({
-        throwOnError: true,
-      });
+    if (isSuccess && data) {
+      if (isFocused === departure) setDepartAirPorts(getData(data));
+      if (isFocused === destination) setDestAirPorts(getData(data));
+    } else if (isError) {
+      if (isFocused === departure) setDepartAirPorts([]);
+      if (isFocused === destination) setDestAirPorts([]);
     }
-  }, [debouncedDepart, refetchDepart]);
+  }, [isSuccess, isError, data, isFocused, departure, destination]);
+
+  const departIsDefaultLocation = debouncedDepart === typedLocationDefault;
+  const destIsDefaultLocation = debouncedDest === typedLocationDefault;
   useEffect(() => {
-    if (debouncedDepart.length < 3 && departAirports.length) {
+    if ((!departIsDefaultLocation && debouncedDepart.length >= 3 && isFocused === departure) || (!destIsDefaultLocation && debouncedDest.length >= 3 && isFocused === destination)) {
+      refetch();
+    }
+  }, [debouncedDepart, debouncedDest, departIsDefaultLocation, departure, destIsDefaultLocation, destination, isFocused, refetch]);
+  useEffect(() => {
+    if ((departIsDefaultLocation || debouncedDepart.length < 3) && departAirports.length) {
       setDepartAirPorts([]);
     }
-  }, [debouncedDepart, departAirports.length]);
+  }, [debouncedDepart, departAirports.length, departIsDefaultLocation]);
   useEffect(() => {
-    if (debouncedDest.length >= 3) refetchDest();
-  }, [debouncedDest, refetchDest]);
-  useEffect(() => {
-    if (debouncedDest.length < 3 && destAirports.length) {
+    if ((destIsDefaultLocation || debouncedDest.length < 3) && destAirports.length) {
       setDestAirPorts([]);
     }
-  }, [debouncedDest, destAirports.length]);
+  }, [debouncedDest, destAirports.length, destIsDefaultLocation]);
+  if (isFocused !== departure && !departLocation && !typedDepart) {
+    setTypedLocations((prevInputs) => ({ ...prevInputs, typedDepart: typedLocationDefault }));
+  }
 
-  const departIsLoading = departIsFetching;
-  const departIsError = departIsFetched && !departAirports.length;
-  const destIsLoading = destIsFetching;
-  const destIsError = destIsFetched && !destAirports.length;
+  if (isFocused !== destination && !destLocation && !typedDest) {
+    setTypedLocations((prevInputs) => ({ ...prevInputs, typedDest: typedLocationDefault }));
+  }
+
+  const departIsError = ((isFetched && !data) || isPaused) && isFocused === departure;
+  const destIsError = ((isFetched && !data) || isPaused) && isFocused === destination;
+  const departIsLoading = isFetching && isFocused === departure && debouncedDepart.length >= 3;
+  const destIsLoading = isFetching && isFocused === destination && debouncedDest.length >= 3;
 
   return (
     <>
@@ -167,33 +178,33 @@ const BasicFlightFormElements = ({ focusedElements: { destination, departure, ca
             <InputDropDown
               name="departure"
               inputId="departure"
-              value={selectedDepart || depart}
-              handleChange={(e) =>
-                setFlightDetails((prev) => {
-                  return prev.map((flight, index) => {
-                    if (index === flightIndex) return { ...flight, depart: e.target.value };
-                    return flight;
-                  });
-                })
-              }
-              placeHolder="Enter City"
-              handleFocus={() => handleFocused(departure)}
+              value={departLocation || typedDepart}
+              handleChange={(e) => {
+                if (!departLocation) {
+                  setTypedLocations((prevInputs) => ({ ...prevInputs, typedDepart: e.target.value }));
+                }
+              }}
+              placeHolder={typedLocationDefault}
+              handleFocus={() => {
+                handleFocus(departure, departLocation);
+                if (typedDepart === typedLocationDefault) {
+                  setTypedLocations((prevInputs) => ({ ...prevInputs, typedDepart: "" }));
+                }
+              }}
               isFocused={isFocused === departure}
+              disabled={departLocation ? true : false}
             >
-              <PossibleLocations previousSearches={prevSearches} previousLocations={locations || []} searchTerm={depart} airPorts={departAirports} handleClick={handleDepartSelectn} setLocation={setSelectedDepart}>
-                <SearchPrompt as="li" searchTerm={depart} isError={departIsError} isLoading={departIsLoading} />
+              <PossibleLocations previousSearches={prevSearches} previousLocations={locations || []} searchTerm={typedDepart === typedLocationDefault ? "" : typedDepart} airPorts={departAirports} handleClick={handleSelectedDeparture} setLocation={handleSetFlightDetails} locationType="depart">
+                <SearchPrompt as="li" searchTerm={typedDepart === typedLocationDefault ? "" : typedDepart} isError={departIsError} isLoading={departIsLoading} />
               </PossibleLocations>
             </InputDropDown>
-            {selectedDepart && (
+            {departLocation && (
               <Button
-                handleClick={() => {
-                  setSelectedDepart("");
-                  setFlightDetails((prev) => {
-                    return prev.map((flight, index) => {
-                      if (index === flightIndex) return { ...flight, depart: "" };
-                      return flight;
-                    });
-                  });
+                handleClick={(e) => {
+                  e.stopPropagation();
+                  setTypedLocations((prevInputs) => ({ ...prevInputs, typedDepart: "" }));
+                  handleSetFlightDetails("depart", "");
+                  handleFocus(departure, departLocation);
                 }}
                 buttonClass="datalistTrigger"
                 buttonType="button"
@@ -210,33 +221,32 @@ const BasicFlightFormElements = ({ focusedElements: { destination, departure, ca
           <InputDropDown
             name="destination"
             inputId="destination"
-            value={selectedDest || dest}
+            value={destLocation || typedDest}
             handleChange={(e) => {
-              setFlightDetails((prev) => {
-                return prev.map((flight, index) => {
-                  if (index === flightIndex) return { ...flight, dest: e.target.value };
-                  return flight;
-                });
-              });
+              if (!destLocation) {
+                setTypedLocations((prevInputs) => ({ ...prevInputs, typedDest: e.target.value }));
+              }
             }}
-            placeHolder="Enter City"
-            handleFocus={() => handleFocused(destination)}
+            placeHolder={typedLocationDefault}
+            handleFocus={() => {
+              handleFocus(destination, destLocation);
+              if (typedDest === typedLocationDefault) {
+                setTypedLocations((prevInputs) => ({ ...prevInputs, typedDest: "" }));
+              }
+            }}
             isFocused={isFocused === destination}
+            disabled={destLocation ? true : false}
           >
-            <PossibleLocations previousSearches={prevSearches} previousLocations={locations || []} searchTerm={dest} airPorts={destAirports} handleClick={handleDestSelectn} setLocation={setSelectedDest}>
-              <SearchPrompt as="li" searchTerm={dest} isError={destIsError} isLoading={destIsLoading} />
+            <PossibleLocations previousSearches={prevSearches} previousLocations={locations || []} searchTerm={typedDest === typedLocationDefault ? "" : typedDest} airPorts={destAirports} handleClick={handleSelectedDestination} setLocation={handleSetFlightDetails} locationType="dest">
+              <SearchPrompt as="li" searchTerm={typedDest === typedLocationDefault ? "" : typedDest} isError={destIsError} isLoading={destIsLoading} />
             </PossibleLocations>
           </InputDropDown>
-          {selectedDest && (
+          {destLocation && (
             <Button
-              handleClick={() => {
-                setSelectedDest("");
-                setFlightDetails((prev) => {
-                  return prev.map((flight, index) => {
-                    if (index === flightIndex) return { ...flight, dest: "" };
-                    return flight;
-                  });
-                });
+              handleClick={(e) => {
+                e.stopPropagation();
+                setTypedLocations((prevInputs) => ({ ...prevInputs, typedDest: "" }));
+                handleSetFlightDetails("dest", "");
               }}
               buttonClass="datalistTrigger"
               buttonType="button"
@@ -248,23 +258,8 @@ const BasicFlightFormElements = ({ focusedElements: { destination, departure, ca
       </li>
       <li className="w-100">
         <InputWrapper label="Departure" icon="ph:calendar-thin">
-          <InputDropDown
-            name="departDate"
-            inputId="departDate"
-            value={_date}
-            handleChange={(e) => {
-              setFlightDetails((prev) => {
-                return prev.map((flight, index) => {
-                  if (index === flightIndex) return { ...flight, departDate: e.target.value };
-                  return flight;
-                });
-              });
-            }}
-            placeHolder={`${currentDay}, ${currentMonth}, ${currentMonthDate}`}
-            isFocused={isFocused === calendar}
-            handleFocus={() => handleFocused(calendar)}
-          >
-            <BookingCalendar showDoubleView={false} setDate={setDepartDate} value={_departDate} selectRange={false} />
+          <InputDropDown name="departDate" inputId="departDate" value={_departDate} placeHolder={`${currentDay}, ${currentMonth}, ${currentMonthDate}`} isFocused={isFocused === calendar} handleFocus={() => handleFocus(calendar, _departDate)} readonly={true}>
+            <BookingCalendar showDoubleView={false} setDate={handleDepartureDate} selectRange={false} />
           </InputDropDown>
         </InputWrapper>
       </li>

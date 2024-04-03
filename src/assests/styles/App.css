@@ -74,7 +74,8 @@ a:active {
   color: darkblue;
 }
 
-.bookingsForm {
+.bookingsForm,
+.flight_navTab {
   background-color: darkblue;
 }
 
@@ -237,11 +238,15 @@ a:active {
   border-bottom-left-radius: unset;
 }
 
-.dataListInput {
+input.dataListInput {
   border: white;
   outline: white;
 }
 
+input.dataListInput:disabled {
+  opacity: 1;
+  color: black;
+}
 .appDataList,
 .flightData {
   padding: 0;
@@ -580,4 +585,27 @@ a:active {
 .navbar-toggler,
 .navbar-toggler-icon {
   border: none;
+}
+
+.searchDetails {
+  background-color: darkblue;
+  padding: 30px;
+}
+
+.flightStops {
+  background-color: #d7e7ff;
+}
+
+.appBtn.flightTableButton {
+  padding: 0;
+  margin: 0;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  background-color: rgba(184, 181, 181, 0.7);
+}
+
+.tableSlider {
+  left: 0;
+  left: left 2s;
 }

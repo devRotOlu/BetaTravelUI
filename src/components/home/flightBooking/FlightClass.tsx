@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 
 import InputDropDown from "../../formElements/InputDropDown";
 
-import { flightContext } from "../../../context/FlightContext";
+import { appContext } from "../../../context/ContextWrapper";
 
 type FlightClassProps = {
   inputClass?: string;
@@ -13,12 +13,16 @@ type FlightClassProps = {
 };
 
 const FlightClass = ({ inputClass, children, focusedInput, flightClass }: FlightClassProps) => {
-  const flightData = useContext(flightContext);
-  const { isFocused, setIsFocused } = flightData;
-  const handleFocused = () => setIsFocused(focusedInput);
+  const appData = useContext(appContext);
+  const { isFocused, setIsFocused } = appData;
+
+  const handleFocused = () => {
+    setIsFocused(focusedInput);
+  };
+
   return (
     <>
-      <InputDropDown name="flightClass" inputId="flightClass" inputClass={inputClass} value={flightClass} handleChange={(e) => {}} handleFocus={() => handleFocused()} isFocused={isFocused === focusedInput}>
+      <InputDropDown name="flightClass" inputId="flightClass" inputClass={inputClass} value={flightClass} handleChange={(e) => {}} handleFocus={() => handleFocused()} isFocused={isFocused === focusedInput} readonly={true}>
         {children}
       </InputDropDown>
       <span style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", right: "10px" }}>

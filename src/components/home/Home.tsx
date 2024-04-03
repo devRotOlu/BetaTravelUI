@@ -12,7 +12,11 @@ const _links = homeTabLinks.map(({ link }) => link);
 const Home = () => {
   const currentRoute = useRouteEventListener(_links, 2);
   const navigate = useNavigate();
-  useEffect(() => navigate("flight"), []);
+  useEffect(() => {
+    if (!currentRoute) {
+      navigate("flight");
+    }
+  }, [currentRoute, navigate]);
   const links = homeTabLinks.map(({ link, icon, linkName }, index) => {
     const borderBottom = link === currentRoute ? "solid 2px darkblue" : "";
     const color = link === currentRoute ? "darkblue" : "unset";
@@ -43,9 +47,7 @@ const Home = () => {
   return (
     <main>
       <Tab className="home_navTab py-4 px-2 column-gap-3 row-gap-4 m-0">{links}</Tab>
-      <form className="bookingsForm container-fluid d-flex flex-column justify-content-center pb-4 py-4">
-        <Outlet />
-      </form>
+      <Outlet />
     </main>
   );
 };

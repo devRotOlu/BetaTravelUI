@@ -1,22 +1,25 @@
-import { ReactNode } from "react";
+import { ReactNode, useContext } from "react";
 
-import { PossibleLocationsProps, prevLocationtype } from "../../../utils/data";
+import { PossibleLocationsProps, prevLocationtype, locationType } from "../../../utils/data";
+import { appContext } from "../../../context/ContextWrapper";
 
-const addCities = (newCities: prevLocationtype[], cities: ReactNode[], startKey: number, handleClick: (displayName: string) => void, className?: string): number => {
+const addCities = (newCities: prevLocationtype[], cities: ReactNode[], startKey: number, handleClick: (locationDetails: locationType) => void, className?: string): number => {
   var _key = startKey;
   var index = 0;
   while (newCities.length && index < newCities.length) {
-    const displayName = newCities[index].displayName;
+    const { city, country, AirportCode } = newCities[index];
+    const location = `${city}, ${country}`;
+    const locationDetails = { city, country, AirportCode, location };
     if (index === newCities.length - 1 && className) {
       cities.push(
-        <li onClick={() => handleClick(displayName)} className={`previousLocations ${className}`} key={_key}>
-          <p>{newCities[index].cityName}</p>
+        <li onClick={() => handleClick(locationDetails)} className={`previousLocations ${className}`} key={_key}>
+          <p>{city}</p>
         </li>
       );
     } else {
       cities.push(
-        <li onClick={() => handleClick(displayName)} className="previousLocations" key={_key}>
-          <p>{newCities[index].cityName}</p>
+        <li onClick={() => handleClick(locationDetails)} className="previousLocations" key={_key}>
+          <p>{city}</p>
         </li>
       );
     }
@@ -26,8 +29,15 @@ const addCities = (newCities: prevLocationtype[], cities: ReactNode[], startKey:
   return _key;
 };
 
-const PossibleLocations = ({ airPorts, children, previousLocations, previousSearches, searchTerm, handleClick, setLocation }: PossibleLocationsProps) => {
-  const handleListClick = (location: string) => setLocation(location);
+const PossibleLocations = ({ airPorts, children, previousLocations, previousSearches, searchTerm, handleClick, setLocation, locationType }: PossibleLocationsProps) => {
+  const appData = useContext(appContext);
+  const { blurAll } = appData;
+
+  const handleListClick = (locationDetails: locationType) => {
+    setLocation(locationType, locationDetails);
+    blurAll();
+  };
+
   var cities = [];
   if (!airPorts.length) {
     if (!searchTerm) {
@@ -49,17 +59,26 @@ const PossibleLocations = ({ airPorts, children, previousLocations, previousSear
     }
   }
 
-  cities = airPorts.map(({ name, code, display_name, city_name }) => {
+  cities = airPorts.map(({ AirportName, AirportCode, city, country }) => {
     return (
-      <li onClick={() => handleClick(display_name, city_name)} className="d-flex gap-3 align-items-center" key={code}>
+      <li
+        onClick={() => {
+          handleClick(AirportCode);
+          blurAll();
+        }}
+        className="d-flex gap-3 align-items-center"
+        key={AirportCode}
+      >
         <span className="d-flex flex-column flex-grow-1" style={{ width: "100px", justifyContent: "flex-start", lineHeight: "22px" }}>
-          <span style={{ whiteSpace: "pre-wrap" }}>{display_name}</span>
+          <span style={{ whiteSpace: "pre-wrap" }}>
+            {city}, {country}
+          </span>
           <span style={{ fontWeight: "lighter", whiteSpace: "pre-wrap" }}>
-            {name} ({code})
+            {AirportName} ({AirportCode})
           </span>
         </span>
         <span className="d-flex justify-content-center align-items-center" style={{ borderRadius: "5px", border: "solid black 1px", height: "50px", width: "50px" }}>
-          {code.toLocaleUpperCase()}
+          {AirportCode.toLocaleUpperCase()}
         </span>
       </li>
     );
