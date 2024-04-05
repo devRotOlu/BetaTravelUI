@@ -1,5 +1,5 @@
-import { useState, forwardRef, ReactNode } from "react";
-import { flightGroupingPropType, Queue } from "../../utils/data";
+import { forwardRef, ReactNode, useState, useEffect } from "react";
+import { flightColumnsPropType, Queue } from "../../utils/data";
 const getSpanElement = (isTrue: boolean, value: number): ReactNode => {
   if (isTrue) {
     return (
@@ -14,8 +14,11 @@ const getSpanElement = (isTrue: boolean, value: number): ReactNode => {
     </span>
   );
 };
-const FlightGrouping = forwardRef<HTMLImageElement, flightGroupingPropType>(({ flightData, cellHeight, columnWidth, flightLogos, flightNames }: flightGroupingPropType, ref) => {
-  const maxfares: [number, number, number] = [Infinity, Infinity, Infinity];
+const FlightGrouping = forwardRef<HTMLImageElement, flightColumnsPropType>(({ flightData, cellHeight, flightLogos, flightNames }: flightColumnsPropType, ref) => {
+  const width = window.screen.width;
+  const widthMultiplier = 0.4284;
+  const [columnWidth, setColumnWidth] = useState(() => width * widthMultiplier);
+  const maxFares: [number, number, number] = [Infinity, Infinity, Infinity];
   const fareQueue = new Queue();
   for (let index = 0; index < flightData.length; index++) {
     const { segments } = flightData[index];
@@ -39,12 +42,23 @@ const FlightGrouping = forwardRef<HTMLImageElement, flightGroupingPropType>(({ f
           },
         } = flight;
         fare = units;
-        if (maxfares[_index - 1] > fare) maxfares[_index - 1] = fare;
+        if (maxFares[_index - 1] > fare) maxFares[_index - 1] = fare;
       }
       fareQueue.enqueue(fare);
     }
     index += airFlights.length - 1;
   }
+
+  useEffect(() => {
+    const resizeListener = () => {
+      const width = window.screen.width;
+      setColumnWidth(() => widthMultiplier * width);
+    };
+    window.addEventListener("resize", resizeListener);
+    return () => {
+      window.removeEventListener("resize", resizeListener);
+    };
+  }, []);
 
   const flightGroups = flightNames.map((name, index) => {
     const zeroStopFare = fareQueue.dequeue() as number;
@@ -53,7 +67,7 @@ const FlightGrouping = forwardRef<HTMLImageElement, flightGroupingPropType>(({ f
     return (
       <div key={name} className="border border-3 border-top-0 border-start-0 border-bottom-0 border-secondary d-flex flex-column" style={{ width: `${columnWidth}px` }}>
         <div className="d-flex flex-column align-items-center justify-content-end pb-1 border border-1 border-top-0 border-start-0 border-end-0" style={{ height: cellHeight }}>
-          <div style={{ width: "50px", height: "fit-content" }}>{!index ? <img className="w-100" src={flightLogos[index]} alt={name} /> : <img ref={ref} className="w-100" src={flightLogos[index]} alt={name} />}</div>
+          <div style={{ width: "50px", height: "fit-content" }}>{index === 0 ? <img className="w-100" ref={ref} src={flightLogos[index]} alt={name} /> : <img className="w-100" src={flightLogos[index]} alt={name} />}</div>
           <span>{name}</span>
         </div>
         {getSpanElement(zeroStopFare === 0, zeroStopFare)}
@@ -69,9 +83,9 @@ const FlightGrouping = forwardRef<HTMLImageElement, flightGroupingPropType>(({ f
         <div style={{ height: cellHeight }} className="d-flex align-items-end pb-1 border border-1 border-top-0 border-start-0 border-end-0">
           <p className="text-center w-100">All Airlines</p>
         </div>
-        {getSpanElement(maxfares[0] === Infinity, maxfares[0])}
-        {getSpanElement(maxfares[1] === Infinity, maxfares[1])}
-        {getSpanElement(maxfares[2] === Infinity, maxfares[2])}
+        {getSpanElement(maxFares[0] === Infinity, maxFares[0])}
+        {getSpanElement(maxFares[1] === Infinity, maxFares[1])}
+        {getSpanElement(maxFares[2] === Infinity, maxFares[2])}
       </div>
       {flightGroups}
     </>

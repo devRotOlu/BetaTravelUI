@@ -29,6 +29,10 @@ a:active {
   font-size: 17px;
 }
 
+:root {
+  --lightBlue: #d7e7ff;
+}
+
 .home_navTab {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -593,7 +597,7 @@ input.dataListInput:disabled {
 }
 
 .flightStops {
-  background-color: #d7e7ff;
+  background-color: var(--lightBlue);
 }
 
 .appBtn.flightTableButton {
@@ -605,7 +609,51 @@ input.dataListInput:disabled {
   background-color: rgba(184, 181, 181, 0.7);
 }
 
+.appBtn.flightListToggle {
+  height: 20px;
+  width: 300px;
+  background-color: red;
+  border: solid thin;
+  margin: 0 0 70px 0;
+}
+
 .tableSlider {
   left: 0;
   left: left 2s;
+}
+
+.flightCard {
+  border: solid 0.2px;
+  border-color: var(--lightBlue);
+  border-left: none;
+  border-right: none;
+}
+
+.flightCard > div:first-child {
+  flex-grow: 1;
+}
+.flightCard > div:last-child {
+  width: 30%;
+  background-color: var(--lightBlue);
+}
+
+.flightCard a {
+  background-color: orange;
+  color: white;
+  padding: 0 22px;
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 400px) {
+  a {
+    font-size: 12px;
+  }
+  p,
+  span {
+    font-size: 14px;
+  }
+  .flightCard p,
+  .flightCard span {
+    font-size: 13px;
+  }
 }

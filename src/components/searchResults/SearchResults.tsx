@@ -2,10 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router";
 
 import FlightSearchDetails from "./FlightSearchDetails";
-import FlightGrouping from "./FlightGrouping";
-import FlightSlider from "./FlightSlider";
+import FlightColumns from "./FlightColumns";
+import FlightTable from "./FlightTable";
+import FlightList from "./FlightList";
 
 import { searchResultType, searchFlightDetailsType, months, days, flightSearchDataType } from "../../utils/data";
+import useImageHeight from "../../utils/useCustomHooks/useImageHeight";
 
 const stringfyDate = (date: Date): string => {
   const year = date.getFullYear();
@@ -18,34 +20,13 @@ const isFlightDetails = (details: any): details is searchFlightDetailsType => {
   return details && "departDate" in details && "departLocation" in details;
 };
 const SearchResults = () => {
-  const [cellHeight, setCellHeight] = useState("0px");
-  const imageRef = useRef<HTMLImageElement>(null!);
-  const width = window.screen.width;
-  const widthMultiplier = 0.4284;
-  const [columnWidth, setColumnWidth] = useState(() => width * widthMultiplier);
+  const { imageRef, imageHeight } = useImageHeight();
+  const cellHeight = `${imageHeight + 40}px`;
   const location = useLocation();
   const data: flightSearchDataType | undefined = location?.state?.data;
   const error: string | undefined = location.state?.error;
   const searchType: searchResultType | undefined = location?.state?.searchType;
   const searchDetails: searchFlightDetailsType | undefined = location?.state?.searchDetails;
-  useEffect(() => {
-    const reloadListener = () => {
-      const height = imageRef.current.parentElement!.clientHeight;
-      setCellHeight(() => `${height + 40}px`);
-    };
-    imageRef.current.addEventListener("load", reloadListener);
-    return () => imageRef.current.removeEventListener("load", reloadListener);
-  }, []);
-  useEffect(() => {
-    const resizeListener = () => {
-      const width = window.screen.width;
-      setColumnWidth(() => widthMultiplier * width);
-    };
-    window.addEventListener("resize", resizeListener);
-    return () => {
-      window.removeEventListener("resize", resizeListener);
-    };
-  }, []);
   if (error) {
     const _error = error;
   }
@@ -106,9 +87,10 @@ const SearchResults = () => {
             flightClass={flightClass}
             returnDate={returnDate ? stringfyDate(returnDate) : returnDate}
           />
-          <FlightSlider cellHeight={cellHeight} columnWidth={columnWidth} flightNamesCount={flightNames.length}>
-            <FlightGrouping ref={imageRef} flightData={data!} cellHeight={cellHeight} columnWidth={columnWidth} flightLogos={flightLogos} flightNames={flightNames} />
-          </FlightSlider>
+          <FlightTable cellHeight={cellHeight} flightNamesCount={1 + flightNames.length}>
+            <FlightColumns ref={imageRef} flightData={data!} cellHeight={cellHeight} flightLogos={flightLogos} flightNames={flightNames} />
+          </FlightTable>
+          <FlightList flightData={data!} flightNames={flightNames} />
         </>
       );
     }

@@ -183,17 +183,18 @@ export type resultAirportType = {
   name: string;
 };
 
-export type flightSliderPropType = {
+export type flightTablePropType = {
   children: React.ReactNode;
   cellHeight: string;
-  columnWidth: number;
   flightNamesCount: number;
 };
 
 export type carriersDataType = { name: string; logo: string }[];
 
-export type flightSearchDataType = {
+type flightDataType = {
   segments: {
+    arrivalAirport: resultAirportType;
+    departureAirport: resultAirportType;
     departureTime: string;
     arrivalTime: string;
     legs: { arrivalAirport: resultAirportType; arrivalTime: string; carriersData: carriersDataType; flightInfo: { flightNumber: number }; departureAirport: resultAirportType; departureTime: string; totalTime: number; cabinClass: string }[];
@@ -206,9 +207,18 @@ export type flightSearchDataType = {
   }[];
   priceBreakdown: { total: { units: number } };
   token: string;
-}[];
+};
 
-export type flightGroupingPropType = { flightData: flightSearchDataType; cellHeight: string; columnWidth: number; flightNames: string[]; flightLogos: string[] };
+export type flightSearchDataType = flightDataType[];
+
+export type flightListPropType = {
+  flightData: flightSearchDataType;
+  flightNames: string[];
+};
+
+export type flightCardPropType = flightDataType;
+
+export type flightColumnsPropType = { flightData: flightSearchDataType; cellHeight: string; flightNames: string[]; flightLogos: string[] };
 export type searchFlightDetailsType = {
   departDate: Date;
   departLocation: string;

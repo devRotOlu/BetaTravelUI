@@ -3,22 +3,22 @@ import { Icon } from "@iconify/react";
 
 import Button from "../Button";
 
-import { flightSliderPropType } from "../../utils/data";
+import { flightTablePropType } from "../../utils/data";
 
-const FlightSlider = ({ children, cellHeight, columnWidth, flightNamesCount }: flightSliderPropType) => {
-  const additive = 20 + columnWidth;
+const FlightTable = ({ children, cellHeight, flightNamesCount }: flightTablePropType) => {
+  const additive = (1 / flightNamesCount + 0.005) * 100;
   const [slideDistance, setSlideDistance] = useState(() => 0);
-  const clickCountRef = useRef(0);
+  const slideCountRef = useRef(0);
   const handlePreviousClick = () => {
-    if (clickCountRef.current !== 0) {
-      setSlideDistance((prevCount) => Math.round(prevCount + additive));
-      clickCountRef.current--;
+    if (slideCountRef.current !== 0) {
+      setSlideDistance((prevCount) => prevCount + additive);
+      slideCountRef.current--;
     }
   };
   const handleNextClick = () => {
-    if (clickCountRef.current !== flightNamesCount - 1) {
-      setSlideDistance((prevCount) => Math.round(prevCount - additive));
-      clickCountRef.current++;
+    if (slideCountRef.current !== flightNamesCount - 1) {
+      setSlideDistance((prevCount) => prevCount - additive);
+      slideCountRef.current++;
     }
   };
   return (
@@ -38,11 +38,13 @@ const FlightSlider = ({ children, cellHeight, columnWidth, flightNamesCount }: f
         </div>
       </div>
       <div style={{ width: "68%", zIndex: "10" }}>
-        <div className="d-flex position-relative tableSlider" style={{ width: "fit-content", left: `${slideDistance}px` }}>
-          {children}
+        <div style={{ width: "fit-content" }}>
+          <div className="d-flex position-relative tableSlider" style={{ width: "fit-content", left: `${slideDistance}%` }}>
+            {children}
+          </div>
         </div>
       </div>
-      <div className="position-absolute w-100 d-flex justify-content-between" style={{ top: "50%", left: "0", transform: "translateY(-50%)", padding: "0 1px", zIndex: "100000", height: "fit-content" }}>
+      <div className="position-absolute w-100 d-flex justify-content-between" style={{ top: "50%", left: "0", transform: "translateY(-50%)", padding: "0 1px", zIndex: "1000", height: "fit-content" }}>
         <Button handleClick={handlePreviousClick} buttonType="button" buttonClass="flightTableButton text-light d-flex justify-content-center align-items-center">
           <Icon icon="ooui:previous-ltr" />
         </Button>
@@ -54,4 +56,4 @@ const FlightSlider = ({ children, cellHeight, columnWidth, flightNamesCount }: f
   );
 };
 
-export default FlightSlider;
+export default FlightTable;
