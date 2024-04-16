@@ -31,6 +31,7 @@ a:active {
 
 :root {
   --lightBlue: #d7e7ff;
+  --lightGrey: #d1d5db;
 }
 
 .home_navTab {
@@ -102,7 +103,6 @@ a:active {
   background-color: orange;
   border: orange;
   display: flex;
-  font-size: 17px;
   align-items: center;
   justify-content: center;
   height: 65px;
@@ -609,14 +609,6 @@ input.dataListInput:disabled {
   background-color: rgba(184, 181, 181, 0.7);
 }
 
-.appBtn.flightListToggle {
-  height: 20px;
-  width: 300px;
-  background-color: red;
-  border: solid thin;
-  margin: 0 0 70px 0;
-}
-
 .tableSlider {
   left: 0;
   left: left 2s;
@@ -644,10 +636,79 @@ input.dataListInput:disabled {
   border-radius: 5px;
 }
 
+.appBtn.filterClearAll {
+  background-color: unset;
+  margin: unset;
+  height: unset;
+  color: darkblue;
+  text-decoration: underline;
+}
+
+.priceSliderBtn {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  position: absolute;
+  top: -3px;
+  display: block;
+  background-color: orange;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: all;
+  width: 15px;
+  height: 15px;
+  background-color: orange;
+  border-color: orange;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #c6c6c6;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  -webkit-appearance: none;
+  pointer-events: all;
+  width: 15px;
+  height: 15px;
+  background-color: orange;
+  border-color: orange;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px orange;
+  cursor: pointer;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  width: 100%;
+  position: absolute;
+  pointer-events: none;
+  border-radius: 10px 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.filterReset {
+  display: flex;
+  color: darkblue;
+  gap: 10px;
+  border: none;
+  background-color: white;
+  align-items: center;
+}
+
 @media screen and (max-width: 400px) {
-  a {
-    font-size: 12px;
+  .filterReset {
+    font-size: 13px;
   }
+  a,
+  button {
+    font-size: 12px;
+    font-weight: bold;
+  }
+
   p,
   span {
     font-size: 14px;
@@ -655,5 +716,17 @@ input.dataListInput:disabled {
   .flightCard p,
   .flightCard span {
     font-size: 13px;
+  }
+  .appBtn.flightListToggle {
+    height: unset;
+    width: unset;
+    border: solid thin var(--lightBlue);
+    margin: 0 0 70px 0;
+    background-color: unset;
+    border-radius: unset;
+    font-size: 13px;
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 10px 20px;
   }
 }

@@ -1,10 +1,12 @@
-import { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router";
 
 import FlightSearchDetails from "./FlightSearchDetails";
 import FlightColumns from "./FlightColumns";
 import FlightTable from "./FlightTable";
 import FlightList from "./FlightList";
+import Filter from "./Filter";
+import FlightFliters from "./FlightFliters";
+import PriceSlider from "./PriceSlider";
 
 import { searchResultType, searchFlightDetailsType, months, days, flightSearchDataType } from "../../utils/data";
 import useImageHeight from "../../utils/useCustomHooks/useImageHeight";
@@ -71,6 +73,17 @@ const SearchResults = () => {
         flightLogos.push(logo);
       }
     }
+    let minPrice = data![0].priceBreakdown.total.units;
+    let maxPrice = minPrice;
+    for (let index = 1; index < data!.length; index++) {
+      const {
+        priceBreakdown: {
+          total: { units },
+        },
+      } = data![index];
+      if (units < minPrice) minPrice = units;
+      if (units > maxPrice) maxPrice = units;
+    }
     const { departDate, destLocation, departLocation, dest_code, depart_code, children, infants, adults, returnDate, flightClass } = searchDetails;
     if (searchType === "oneWayFlight" || searchType === "roundTripFlight") {
       return (
@@ -91,6 +104,11 @@ const SearchResults = () => {
             <FlightColumns ref={imageRef} flightData={data!} cellHeight={cellHeight} flightLogos={flightLogos} flightNames={flightNames} />
           </FlightTable>
           <FlightList flightData={data!} flightNames={flightNames} />
+          <Filter>
+            <FlightFliters sortedFlightData={data!}>
+              <PriceSlider minPrice={minPrice} maxPrice={maxPrice} />
+            </FlightFliters>
+          </Filter>
         </>
       );
     }

@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 import { flightCardPropType } from "../../utils/data";
@@ -9,12 +8,21 @@ const splitTime = (time: string) => {
   return `${timeParts[0]}:${timeParts[1]}`;
 };
 
+const getTimeInHours = (totalTime: number): string => {
+  const secondToHour = 3600;
+  const hours = Math.floor(totalTime / secondToHour);
+  const minutes = (totalTime % secondToHour) / 60;
+  return `${hours}h : ${minutes}m`;
+};
+
 const FlightCard = ({
-  segments,
-  priceBreakdown: {
-    total: { units },
+  flightData: {
+    segments,
+    priceBreakdown: {
+      total: { units },
+    },
+    token,
   },
-  token,
 }: flightCardPropType) => {
   const { imageRef, imageHeight } = useImageHeight();
   const {
@@ -49,13 +57,13 @@ const FlightCard = ({
             <p className="locationCity text-secondary">{departureCityName}</p>
           </div>
           <div className="d-flex flex-column gap-2">
-            <p>{totalTime}</p>
+            <p className="fw-bold">{getTimeInHours(totalTime)}</p>
             <div className="d-flex align-items-center" style={{ height: "fit-content" }}>
               <span style={{ width: "3px", height: "3px", backgroundColor: "var(--lightBlue)" }} />
               <span style={{ height: "1px", width: "60px", backgroundColor: "var(--lightBlue)" }} />
               <span style={{ width: "3px", height: "3px", backgroundColor: "var(--lightBlue)", borderRadius: "50%" }} />
             </div>
-            <p className="flightStopCount fw-bold">{stopCount} Stops</p>
+            <p className="flightStopCount fw-bold">{stopCount > 1 ? `${stopCount} Stops` : `${stopCount} Stop`} </p>
           </div>
           <div className="d-flex flex-column gap-2">
             <p>

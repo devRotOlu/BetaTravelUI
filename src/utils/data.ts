@@ -216,7 +216,9 @@ export type flightListPropType = {
   flightNames: string[];
 };
 
-export type flightCardPropType = flightDataType;
+export type shouldDisplayCardType = { shouldDisplayCard: boolean };
+
+export type flightCardPropType = { flightData: flightDataType };
 
 export type flightColumnsPropType = { flightData: flightSearchDataType; cellHeight: string; flightNames: string[]; flightLogos: string[] };
 export type searchFlightDetailsType = {
@@ -389,3 +391,24 @@ export class Queue {
     return this.rear < this.front;
   }
 }
+
+export type filterTypeProps = {
+  children: React.ReactNode;
+};
+
+export type flightFlitersProps = {};
+
+export type priceSliderTypeProps = {
+  minPrice: number;
+  maxPrice: number;
+};
+
+export type filterHeaderTypeProps = {
+  handleClick: () => void;
+  filterType: string;
+};
+
+export type flightFiltersTypeProps = {
+  children: React.ReactNode;
+  sortedFlightData: flightSearchDataType;
+};
